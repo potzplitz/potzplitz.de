@@ -18,8 +18,10 @@ class Header {
         $Template->load_hash([
             "USERNAME" => $username,
             "USERID" => ARR_USERINFO['userid'],
-            "PROFILEPICTURE" => "/static/profilepictures/" . $pfp
+            "PROFILEPICTURE" => "/static/profilepictures/" . $pfp,
+            "HYPERLINK" => ROUTE
         ]);
+        
         $Template->compile_template();
         $Template->show_template();
     }

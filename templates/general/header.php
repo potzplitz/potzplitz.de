@@ -1,7 +1,9 @@
 <div class="header">
   <!-- <div class="error">test</div> -->
   <div class="header-left">
-    <span id="header">SITENAME</span>
+    <a href="<-HYPERLINK->" style="text-decoration: none;">
+      <span id="header">SITENAME</span>
+    </a>
   </div>
 
   <div class="header-right">

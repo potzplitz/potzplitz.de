@@ -15,9 +15,17 @@ class GDExtreme implements Routable {
         $Template = new Template();
         $Template2 = new Template();
 
-        $querycount = "SELECT * from t_aredl";
-        $DB2->query($querycount, []);
-        $ges_pages = ceil($DB2->rows / 100);
+        $querycount = "SELECT COUNT(*) as cnt FROM t_aredl";
+        $bindsCount = [];
+
+        if (!empty(INS['q'])) {
+            $querycount .= " WHERE lower(name) LIKE :levelname";
+            $bindsCount['levelname'] = '%' . strtolower(INS['q']) . '%';
+        }
+
+        $DB2->query($querycount, $bindsCount);
+        $row = $DB2->RSArray[0];
+        $ges_pages = ceil($row['cnt'] / 100);
 
         $page = (INS['page'] ?? 1);
 
@@ -96,9 +104,9 @@ class GDExtreme implements Routable {
             $Template->compile_template();
             $list .= $Template->get_output();
         }
-
+        
         $pageLinks = '';
-        $range = 3;
+        $range = ($ges_pages < 3 ? $ges_pages : 3);
 
         for ($i = max(1, $page - $range); $i <= min($ges_pages, $page + $range); $i++) {
             if ($i == $page) {
