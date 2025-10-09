@@ -1,0 +1,196 @@
+:root {
+  --bg-0: #05070d;
+  --bg-1: #0a0f1a;
+  --bg-2: #0e1528;
+
+  --border-1: #1c3faa;
+  --border-2: #0f1f47;
+  --border-comp: #198754;
+
+  --fg-0: #e2e8f0;
+  --fg-1: #94a3b8;
+
+  --acc: #4f9efc;
+  --acc-2: #5eead4;
+  --err: #f43f5e;
+
+  --radius: 14px;
+  --shadow:
+    0 10px 25px rgba(0, 0, 0, 0.55),
+    0 0 10px rgba(79, 158, 252, 0.15),
+    0 0 25px rgba(79, 158, 252, 0.08);
+}
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+body {
+  background:
+    radial-gradient(1200px 800px at 20% -10%, #1f2937 0%, transparent 55%),
+    radial-gradient(1000px 600px at 120% 20%, #0ea5e9 0%, transparent 60%),
+    radial-gradient(900px 600px at -10% 120%, #047857 0%, transparent 60%),
+    var(--bg-0);
+    background-attachment: fixed;
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--fg-0);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--bg-2) 84%, white 6%);
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--bg-2) 94%, black 6%),
+      color-mix(in oklab, var(--bg-2) 88%, black 12%));
+  color: var(--fg-0);
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+
+  &::placeholder {
+    color: color-mix(in oklab, var(--fg-1) 88%, white 12%);
+  }
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--acc) 40%, white 0%);
+  }
+
+  &:focus-visible {
+    border-color: var(--acc);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--acc) 20%, transparent 80%);
+  }
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #0b1220;
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--acc) 95%, white 5%),
+      color-mix(in oklab, var(--acc) 85%, black 15%));
+  cursor: pointer;
+}
+
+.header {
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: color-mix(in oklab, var(--bg-1) 85%, black 15%);
+  border-bottom: 1px solid color-mix(in oklab, var(--border-1) 80%, white 10%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    inset 0 -1px 0 color-mix(in oklab, var(--acc) 15%, transparent 85%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-radius: 0 0 var(--radius) var(--radius);
+  animation: headerFade 0.6s ease forwards;
+}
+
+@keyframes headerFade {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--acc), var(--acc-2));
+  opacity: 0.7;
+  box-shadow: 0 0 12px color-mix(in oklab, var(--acc) 60%, transparent 40%);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--fg-0);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  background: var(--bg-1);
+}
+
+.header-right {
+  width: 15%;
+  height: 80px;
+  // background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.profile-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--acc) 25%, transparent 75%),
+    transparent
+  );
+  border-radius: 999px;
+  padding: 6px 12px;
+  gap: 8px;
+  height: 50px;
+  box-shadow: 0 0 15px color-mix(in oklab, var(--bg-0) 40%, transparent 60%);
+  border: 1px var(--acc) solid;
+}
+
+.profile-name {
+  color: white;
+  font-weight: 600;
+  z-index: 1;
+  white-space: nowrap;
+  margin-top: -3px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}

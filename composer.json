@@ -1,0 +1,13 @@
+{
+    "name": "potzplitz/toolbox",
+    "description": "Several tools for Geometry Dash, osu! and other things",
+    "type": "project",
+    "authors": [
+        {
+            "name": "potzplitz"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.11"
+    }
+}

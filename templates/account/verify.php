@@ -1,0 +1,1 @@
+<p>Verification mail was sent to <-EMAIL-></p>
