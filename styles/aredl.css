@@ -71,4 +71,78 @@
   background-color: rgba(11, 54, 18, 0.281);
 }
 
+.paging {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.page-numbers {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-1);
+  background: color-mix(in oklab, var(--bg-2) 90%, white 10%);
+  border: 1px solid color-mix(in oklab, var(--border-1) 60%, white 10%);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 32px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.page-link:hover {
+  color: var(--fg-0);
+  background: color-mix(in oklab, var(--acc) 20%, transparent 80%);
+  border-color: var(--acc);
+}
+
+.page-link.active {
+  background: var(--acc);
+  color: #fff;
+  border-color: var(--acc);
+  font-weight: 700;
+}
+
+.list form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.list #searchbar input[type=text] {
+  width: 60%;
+  max-width: 480px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--border-1) 80%, white 10%);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 94%, black 6%), color-mix(in oklab, var(--bg-2) 88%, black 12%));
+  color: var(--fg-0);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.list #searchbar input[type=text]::placeholder {
+  color: color-mix(in oklab, var(--fg-1) 80%, white 10%);
+}
+.list #searchbar input[type=text]:hover {
+  border-color: color-mix(in oklab, var(--acc) 30%, white 0%);
+}
+.list #searchbar input[type=text]:focus-visible {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--acc) 25%, transparent 75%);
+}
+
 /*# sourceMappingURL=aredl.css.map */

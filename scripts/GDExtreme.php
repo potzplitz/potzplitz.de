@@ -15,23 +15,38 @@ class GDExtreme implements Routable {
         $Template = new Template();
         $Template2 = new Template();
 
-        $page = (INS['page'] ?? 1);
-        $per_page = 100;
-        $offset = (max($page, 1) - 1) * $per_page;
-
-
         $querycount = "SELECT * from t_aredl";
         $DB2->query($querycount, []);
         $ges_pages = ceil($DB2->rows / 100);
 
-        $query = "SELECT * from t_aredl order by position asc offset :offset rows fetch first 100 rows only";
+        $page = (INS['page'] ?? 1);
+
+        if($page > $ges_pages) {
+            $page = $ges_pages;
+        } else if($page < 1) {
+            $page = 1;
+        }
+
+        $per_page = 100;
+        $offset = (max($page, 1) - 1) * $per_page;
+
+        $query = "SELECT * from t_aredl";
+
         $binds = [
             "offset" => $offset
         ];
+        
+        if(!empty(INS['q'])) {
+            $query .= " where lower(name) like :levelname";
+            $binds['levelname'] = '%' . strtolower(INS['q']) . '%';
+        }
+        
+        $query .= " order by position asc offset :offset rows fetch first 100 rows only";
 
         $DB->query($query, $binds);
 
         $levels = $DB->RSArray;
+        $levelcount = $DB->rows;
 
         $Template->load_template("geometrydash/aredl_row.php");
         $Template2->load_template("geometrydash/aredl.php");
@@ -82,13 +97,39 @@ class GDExtreme implements Routable {
             $list .= $Template->get_output();
         }
 
+        $pageLinks = '';
+        $range = 3;
+
+        for ($i = max(1, $page - $range); $i <= min($ges_pages, $page + $range); $i++) {
+            if ($i == $page) {
+                $pageLinks .= '<span class="page-link active">' . $i . '</span>';
+            } else {
+                $pageLinks .= '<a href="/gd/aredl' . (!empty(INS['q']) ? '?q=' . INS['q'] . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
+            }
+        }
+
+        $Hash['DISP_PAGES'] = "";
+        if($levelcount < 1) {
+            $list = "<h2 style='width: 100%; text-align: center;'>No Levels found!</h2>";
+            $pageLinks = "";
+            $Hash['DISP_PAGES'] = "hidden";
+
+        } else if($ges_pages < 2) {
+            $pageLinks = "";
+            $Hash['DISP_PAGES'] = "hidden";
+        }
+
         $Template2->load_hash([
             "LIST" => $list,
             "NEXT_PAGE" => $page + 1,
             "PREV_PAGE" => $page - 1,
             "CURRENT_PAGE" => $page,
             "DISP_NEXT_PAGE" => (($ges_pages <= $page) ? "hidden" : ""),
-            "DISP_PREV_PAGE" => (($page <= 1) ? "hidden" : "")
+            "DISP_PREV_PAGE" => (($page <= 1) ? "hidden" : ""),
+            "MAX_PAGES" => $ges_pages,
+            "PAGE_LINKS" => $pageLinks,
+            "DISP_PAGES" => $Hash['DISP_PAGES'],
+            "QUERY" => INS['q'] ?? ''
         ]);
 
         $Template2->compile_template();

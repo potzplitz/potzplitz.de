@@ -33,7 +33,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 body {
@@ -110,6 +110,12 @@ body {
   padding: 0 28px;
   border-radius: 0 0 var(--radius) var(--radius);
   animation: headerFade 0.6s ease forwards;
+
+  .error {
+    color: red;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @keyframes headerFade {
