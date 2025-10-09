@@ -15,41 +15,65 @@ class GDExtreme implements Routable {
         $Template = new Template();
         $Template2 = new Template();
 
-        $querycount = "SELECT COUNT(*) as cnt FROM t_aredl";
+        $action = INS['action'] ?? 'search';
+        
+        $querycount = "SELECT COUNT(1) as cnt FROM t_aredl a";
+        $query = "SELECT a.* FROM t_aredl a";
         $bindsCount = [];
+        $binds = [];
+
+        $template_action = "check";
+
+        if($action == 'check') {
+            $querycount .= " JOIN t_aredl_records r ON a.id = r.level_id 
+                            AND r.user_id = :userid 
+                            AND r.progress > 99 
+                            AND r.sart = 'AREDL'";
+            $query .= " JOIN t_aredl_records r ON a.id = r.level_id 
+                        AND r.user_id = :userid 
+                        AND r.progress > 99 
+                        AND r.sart = 'AREDL'";
+
+            $bindsCount['userid'] = SESS_USERID;
+            $binds['userid'] = SESS_USERID;
+            $template_action = "";
+        }
 
         if (!empty(INS['q'])) {
-            $querycount .= " WHERE lower(name) LIKE :levelname";
-            $bindsCount['levelname'] = '%' . strtolower(INS['q']) . '%';
+            $search = trim(strtolower(INS['q']));
+            
+            $querycount .= " WHERE (LOWER(a.name) LIKE :levelname OR LOWER(a.raw_name) LIKE :levelname_raw";
+            $query .= " WHERE (LOWER(a.name) LIKE :levelname OR LOWER(a.raw_name) LIKE :levelname_raw";
+
+            $binds['levelname'] = "%{$search}%";
+            $binds['levelname_raw'] = "%{$search}%";
+
+            $bindsCount['levelname'] = "%{$search}%";
+            $bindsCount['levelname_raw'] = "%{$search}%";
+
+            if (ctype_digit($search)) {
+                $querycount .= " OR a.id = :id)";
+                $query .= " OR a.id = :id)";
+                $binds['id'] = $search;
+            } else {
+                $querycount .= ")";
+                $query .= ")";
+            }
         }
 
-        $DB2->query($querycount, $bindsCount);
+        $DB2->query($querycount, $bindsCount);  
         $row = $DB2->RSArray[0];
-        $ges_pages = ceil($row['cnt'] / 100);
+        $ges_pages = ceil(($row['cnt'] ?? 0) / 100);
 
         $page = (INS['page'] ?? 1);
-
-        if($page > $ges_pages) {
-            $page = $ges_pages;
-        } else if($page < 1) {
-            $page = 1;
-        }
+        $page = max(1, min($page, $ges_pages ?: 1));
 
         $per_page = 100;
-        $offset = (max($page, 1) - 1) * $per_page;
+        $offset = ($page - 1) * $per_page;
 
-        $query = "SELECT * from t_aredl";
-
-        $binds = [
-            "offset" => $offset
-        ];
-        
-        if(!empty(INS['q'])) {
-            $query .= " where lower(name) like :levelname";
-            $binds['levelname'] = '%' . strtolower(INS['q']) . '%';
-        }
-        
-        $query .= " order by position asc offset :offset rows fetch first 100 rows only";
+        $query .= " ORDER BY a.position ASC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
+        $binds['offset'] = $offset;
+        $binds['limit'] = $per_page;
 
         $DB->query($query, $binds);
 
@@ -63,14 +87,8 @@ class GDExtreme implements Routable {
         load_css("aredl");
         load_js(['aredl_check']);
 
-        $list = "";
-        $counter = 0;
-
-        $query = "SELECT * from t_aredl_records where user_id = :userid and progress > 99 and sart = 'AREDL'";
-        $binds = [
-            "userid" => SESS_USERID
-        ];
-        $DB->query($query, $binds);
+        $query = "SELECT * FROM t_aredl_records WHERE user_id = :userid AND progress > 99 AND sart = 'AREDL'";
+        $DB->query($query, ['userid' => SESS_USERID]);
         $records = $DB->RSArray;
 
         $attemptsByLevel = [];
@@ -78,11 +96,13 @@ class GDExtreme implements Routable {
             $attemptsByLevel[$rec['level_id']] = $rec['attempts'];
         }
 
-         $completedIds = array_keys($attemptsByLevel);
-        
-        foreach($levels as $level) {
-            $counter++;
+        $completedIds = array_keys($attemptsByLevel);
 
+        $list = "";
+        $counter = 0;
+
+        foreach ($levels as $level) {
+            $counter++;
             $found = in_array($level['id'], $completedIds);
             $attempts = $attemptsByLevel[$level['id']] ?? 0;
 
@@ -104,7 +124,7 @@ class GDExtreme implements Routable {
             $Template->compile_template();
             $list .= $Template->get_output();
         }
-        
+
         $pageLinks = '';
         $range = ($ges_pages < 3 ? $ges_pages : 3);
 
@@ -117,12 +137,11 @@ class GDExtreme implements Routable {
         }
 
         $Hash['DISP_PAGES'] = "";
-        if($levelcount < 1) {
+        if ($levelcount < 1) {
             $list = "<h2 style='width: 100%; text-align: center;'>No Levels found!</h2>";
             $pageLinks = "";
             $Hash['DISP_PAGES'] = "hidden";
-
-        } else if($ges_pages < 2) {
+        } elseif ($ges_pages < 2) {
             $pageLinks = "";
             $Hash['DISP_PAGES'] = "hidden";
         }
@@ -137,12 +156,14 @@ class GDExtreme implements Routable {
             "MAX_PAGES" => $ges_pages,
             "PAGE_LINKS" => $pageLinks,
             "DISP_PAGES" => $Hash['DISP_PAGES'],
-            "QUERY" => INS['q'] ?? ''
+            "QUERY" => INS['q'] ?? '',
+            "TEMP_ACTION" => $template_action
         ]);
 
         $Template2->compile_template();
         $Template2->show_template();
     }
+
     private function show_detail($levelid) {
         // TODO Router so umbauen dass er mit dynamischen /{id}/... routen umgehen kann
     }

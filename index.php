@@ -39,11 +39,16 @@ if ($DB->rows > 0) {
 
     $DB->query($query, $binds);
 
-    if(substr($request, 1, 3) == 'api') {
+    if (str_starts_with($request, '/api/gd')) {
+        require_once("scripts/api/gd_api/" . $selected_script . ".php");
+
+    } else if (str_starts_with($request, '/api')) {
         require_once("scripts/api/" . $selected_script . ".php");
+
     } else {
         require_once("scripts/" . $selected_script . ".php");
     }
+
     $script = new $selected_script(PARAMS);
     $script->init();
 
