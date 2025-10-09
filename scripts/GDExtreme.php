@@ -15,55 +15,37 @@ class GDExtreme implements Routable {
         $Template = new Template();
         $Template2 = new Template();
 
-        $action = INS['action'] ?? 'search';
-        
-        $querycount = "SELECT COUNT(1) as cnt FROM t_aredl a";
-        $query = "SELECT a.* FROM t_aredl a";
+        $querycount = "SELECT COUNT(*) as cnt FROM t_aredl";
+        $query = "SELECT * FROM t_aredl";
         $bindsCount = [];
         $binds = [];
 
-        $template_action = "check";
-
-        if($action == 'check') {
-            $querycount .= " JOIN t_aredl_records r ON a.id = r.level_id 
-                            AND r.user_id = :userid 
-                            AND r.progress > 99 
-                            AND r.sart = 'AREDL'";
-            $query .= " JOIN t_aredl_records r ON a.id = r.level_id 
-                        AND r.user_id = :userid 
-                        AND r.progress > 99 
-                        AND r.sart = 'AREDL'";
-
-            $bindsCount['userid'] = SESS_USERID;
-            $binds['userid'] = SESS_USERID;
-            $template_action = "";
-        }
+        $whereParts = [];
 
         if (!empty(INS['q'])) {
-            $search = trim(strtolower(INS['q']));
-            
-            $querycount .= " WHERE (LOWER(a.name) LIKE :levelname OR LOWER(a.raw_name) LIKE :levelname_raw";
-            $query .= " WHERE (LOWER(a.name) LIKE :levelname OR LOWER(a.raw_name) LIKE :levelname_raw";
+            $q = trim(strtolower(INS['q']));
 
-            $binds['levelname'] = "%{$search}%";
-            $binds['levelname_raw'] = "%{$search}%";
-
-            $bindsCount['levelname'] = "%{$search}%";
-            $bindsCount['levelname_raw'] = "%{$search}%";
-
-            if (ctype_digit($search)) {
-                $querycount .= " OR a.id = :id)";
-                $query .= " OR a.id = :id)";
-                $binds['id'] = $search;
-            } else {
-                $querycount .= ")";
-                $query .= ")";
+            if (ctype_digit($q)) {
+                $whereParts[] = "id = :idquery";
+                $bindsCount['idquery'] = $q;
+                $binds['idquery'] = $q;
             }
+
+            $whereParts[] = "LOWER(name) LIKE :query";
+            $whereParts[] = "LOWER(raw_name) LIKE :query";
+            $bindsCount['query'] = "%{$q}%";
+            $binds['query'] = "%{$q}%";
         }
 
-        $DB2->query($querycount, $bindsCount);  
+        if ($whereParts) {
+            $where = " WHERE " . implode(" OR ", $whereParts);
+            $querycount .= $where;
+            $query .= $where;
+        }
+
+        $DB2->query($querycount, $bindsCount);
         $row = $DB2->RSArray[0];
-        $ges_pages = ceil(($row['cnt'] ?? 0) / 100);
+        $ges_pages = ceil($row['cnt'] / 100);
 
         $page = (INS['page'] ?? 1);
         $page = max(1, min($page, $ges_pages ?: 1));
@@ -71,9 +53,8 @@ class GDExtreme implements Routable {
         $per_page = 100;
         $offset = ($page - 1) * $per_page;
 
-        $query .= " ORDER BY a.position ASC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
+        $query .= " ORDER BY position ASC OFFSET :offset ROWS FETCH FIRST 100 ROWS ONLY";
         $binds['offset'] = $offset;
-        $binds['limit'] = $per_page;
 
         $DB->query($query, $binds);
 
@@ -125,6 +106,7 @@ class GDExtreme implements Routable {
             $list .= $Template->get_output();
         }
 
+        // --- Pagination-Links ---
         $pageLinks = '';
         $range = ($ges_pages < 3 ? $ges_pages : 3);
 
@@ -156,8 +138,7 @@ class GDExtreme implements Routable {
             "MAX_PAGES" => $ges_pages,
             "PAGE_LINKS" => $pageLinks,
             "DISP_PAGES" => $Hash['DISP_PAGES'],
-            "QUERY" => INS['q'] ?? '',
-            "TEMP_ACTION" => $template_action
+            "QUERY" => INS['q'] ?? ''
         ]);
 
         $Template2->compile_template();

@@ -216,77 +216,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 28px;
 }
 
 .settings-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid color-mix(in oklab, var(--border-1) 80%, white 10%);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 94%, black 6%), color-mix(in oklab, var(--bg-2) 88%, black 12%));
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
   color: var(--fg-0);
-}
-
-.settings-btn svg {
-  width: 22px;
-  height: 22px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
+  transition: color 0.2s ease;
 }
 
 .settings-btn:hover {
-  border-color: var(--acc);
-  background: color-mix(in oklab, var(--acc) 20%, var(--bg-2) 80%);
-  color: white;
+  color: var(--acc);
 }
 
-.settings-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-.settings-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--acc) 25%, transparent 75%);
-}
-
-.search-wrap {
+#searchbar {
+  flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  /* sorgt dafür, dass beide Buttons + Input gleich hoch sind */
-  /* entfernt eventuelles Padding des Formulars */
-}
-.search-wrap button, .search-wrap input[type=text] {
-  height: 48px;
-}
-.search-wrap form {
-  display: flex;
-  align-items: center;
-  margin: 0;
-}
-
-.search-wrap {
-  width: 90%;
-  max-width: 900px;
-  display: flex;
-  margin-left: 14%;
-}
-.search-wrap form {
-  flex: 1; /* beide Formulare teilen sich dynamisch den Platz */
-}
-.search-wrap input[type=text] {
-  width: 100%; /* Textfeld nimmt alles, was sein Formular erlaubt */
 }
 
 /*# sourceMappingURL=aredl.css.map */
