@@ -64,11 +64,12 @@
 .gdAREDLContainer .attemptsfield {
   right: 100px;
 }
-.gdAREDLContainer.completed {
-  border: 2px solid var(--border-comp);
+
+.completed {
+  border: 2px solid var(--border-comp) !important;
   box-shadow: 5px 5px 5px var(--border-comp);
 }
-.gdAREDLContainer.completed .blur {
+.completed .blur {
   background-color: rgba(11, 54, 18, 0.281);
 }
 

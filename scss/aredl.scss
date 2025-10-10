@@ -69,15 +69,15 @@
     .attemptsfield {
         right: 100px;
     }
+}
 
-    &.completed { 
-        border: 2px solid var(--border-comp); 
-        box-shadow: 5px 5px 5px var(--border-comp); 
-        
-        .blur { 
-            background-color: rgba(11, 54, 18, 0.281); 
-        } 
-    }
+.completed { 
+    border: 2px solid var(--border-comp) !important; 
+    box-shadow: 5px 5px 5px var(--border-comp); 
+     
+    .blur { 
+        background-color: rgba(11, 54, 18, 0.281); 
+    } 
 }
 
 .paging {

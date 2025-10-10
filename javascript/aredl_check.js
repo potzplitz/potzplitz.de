@@ -37,4 +37,16 @@ $(document).ready(function() {
             console.error('Fehler beim Senden:', error);
         });
     });
+
+$('#check_levels').on('click', function(e) {
+    let checked = $('#hidden_checked').val();
+
+    checked = (checked === 'true') ? 'false' : 'true';
+
+    $('#hidden_checked').val(checked);
+    $('#searchbar').submit();
+});
+
+
+
 });

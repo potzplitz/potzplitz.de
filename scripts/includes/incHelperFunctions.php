@@ -60,5 +60,5 @@ function load_essential_scripts() {
     echo '<script src="/javascript/main.js"></script>';
     echo "<link rel='stylesheet' href='../styles/main.css'>";
     echo '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-          <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>';
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>';
 }
