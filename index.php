@@ -35,6 +35,7 @@ if ($DB->rows > 0) {
     if((int)$route['header'] == 1) {
         $Header = new Header();
         $Header->show_header();
+        require_once("scripts/includes/incIcons.php");
     }
 
     $DB->query($query, $binds);

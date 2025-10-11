@@ -6,12 +6,13 @@ class GDExtreme implements Routable {
     }
     public function init() {
         match($this->mode) {
-            "view_list" => $this->view_list()
+            "view_list" => $this->view_list(),
+            "detail" => $this->show_detail(INS),
+            default => null
         };
     }
     private function view_list() {
         $DB = new Database();
-        $DB2 = new Database();
         $Template = new Template();
         $Template2 = new Template();
 
@@ -27,7 +28,7 @@ class GDExtreme implements Routable {
         }
 
         if(!empty(INS['q'])) {
-            $q = trim(strtolower(INS['q']));
+            $q = urldecode(trim(strtolower(INS['q'])));
 
             $query .= " where (";
 
@@ -36,7 +37,7 @@ class GDExtreme implements Routable {
                 $binds['query_id'] = $q;
             }
             
-            $query .= "a.name like :query or a.raw_name like :query)";
+            $query .= " lower(a.name) like :query or lower(a.raw_name) like :query)";
 
             $binds['query'] = "%" . $q . "%";
         }
@@ -92,11 +93,11 @@ class GDExtreme implements Routable {
                 "LEVELNAME_RAW" => $level['raw_name'],
                 "PLACEMENT" => $level['position'],
                 "CREATOR" => $level['creator'],
-                "ID" => $level['id'],
+                "ID" => $levelKey,
                 "VERIFIER" => $level['verifier'],
-                "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $level['id'] . "/small",
+                "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
                 "COUNTER" => $counter,
-                "LEVELID" => $level['id'],
+                "LEVELID" => $levelKey,
                 "COMPLETED" => ($found ? "completed" : ""),
                 "BUTTONTEXT" => ($found ? "uncheck" : "check"),
                 "ATTEMPTS" => $attempts
@@ -113,7 +114,7 @@ class GDExtreme implements Routable {
             if ($i == $page) {
                 $pageLinks .= '<span class="page-link active">' . $i . '</span>';
             } else {
-                $pageLinks .= '<a href="/gd/aredl' . (!empty(INS['q']) ? '?q=' . INS['q'] . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
+                $pageLinks .= '<a href="/gd/aredl' . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
             }
         }
 
@@ -147,7 +148,9 @@ class GDExtreme implements Routable {
         $Template2->show_template();
     }
 
-    private function show_detail($levelid) {
+    private function show_detail($inHash) {
         // TODO Router so umbauen dass er mit dynamischen /{id}/... routen umgehen kann
+
+        //Da dann auch das große vorschaubild nehmen
     }
 }
