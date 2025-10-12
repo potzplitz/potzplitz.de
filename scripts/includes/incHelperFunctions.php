@@ -50,7 +50,9 @@ function timer_end($name) {
     global $__timers;
     if (isset($__timers[$name])) {
         $elapsed = microtime(true) - $__timers[$name];
-        echo "<!-- Timer [$name]: " . number_format($elapsed, 5) . "s -->";
+        $elapsed = number_format($elapsed, 2);
+        echo "<!-- Timer [$name]: " . $elapsed . "s -->";
+        return $elapsed;
     }
 }
 
@@ -58,7 +60,14 @@ function load_essential_scripts() {
     echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">';
     echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>';
     echo '<script src="/javascript/main.js"></script>';
-    echo "<link rel='stylesheet' href='../styles/main.css'>";
+    echo "<link rel='stylesheet' href='/styles/main.css'>";
     echo '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>';
+}
+
+function display_info_message($message, $exit = false) {
+    echo "<h2>" . $message . "</h2>";
+    if($exit) {
+        die;
+    }
 }

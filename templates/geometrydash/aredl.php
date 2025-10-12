@@ -15,7 +15,12 @@
             </button>
         </div>
     </form>
-    <p style="width: 100%; text-align: center; color: white; margin-top: -20px;"><-LEVELCOUNT-> results found</p>
+    <p class="text-center mt-n3" style="color: white;">
+        <-LEVELCOUNT-> results found 
+        <span style="color: rgba(255,255,255,0.3); text-shadow: 0 0 2px rgba(255,255,255,0.015);">
+            (<-QUERYTIME->s.)
+        </span>
+    </p>
     <div class="paging d-flex justify-content-center align-items-center gap-2 my-4">
         <a href="/gd/aredl?page=<-PREV_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_PREV_PAGE->">‹</a>
     <div class="page-numbers">

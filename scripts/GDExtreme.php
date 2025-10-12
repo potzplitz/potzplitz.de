@@ -7,7 +7,7 @@ class GDExtreme implements Routable {
     public function init() {
         match($this->mode) {
             "view_list" => $this->view_list(),
-            "detail" => $this->show_detail(INS),
+            "detail" => $this->show_detail(array_merge(INS, PARAMS)),
             default => null
         };
     }
@@ -15,6 +15,8 @@ class GDExtreme implements Routable {
         $DB = new Database();
         $Template = new Template();
         $Template2 = new Template();
+
+        timer_start("AREDL_query");
 
         $query = "SELECT * FROM t_aredl a";
         $binds = [];
@@ -70,6 +72,10 @@ class GDExtreme implements Routable {
         $query = "SELECT * FROM t_aredl_records WHERE user_id = :userid AND progress > 99 AND sart = 'AREDL'";
         $DB->query($query, ['userid' => SESS_USERID]);
         $records = $DB->RSArray;
+
+        $querytime = timer_end("AREDL_query");
+
+        // dd(TIMER_DURATION);
 
         $attemptsByLevel = [];
         foreach ($records as $rec) {
@@ -140,7 +146,8 @@ class GDExtreme implements Routable {
             "QUERY" => INS['q'] ?? '',
             "CHECKED" => ($isChecked ? "true" : "false"),
             "COMPLETED" => (($found ?? false) ? "completed" : ""),
-            "LEVELCOUNT" => $ALLlevelcount
+            "LEVELCOUNT" => $ALLlevelcount,
+            "QUERYTIME" => $querytime
         ]);
 
         $Template2->compile_template();
@@ -148,8 +155,29 @@ class GDExtreme implements Routable {
     }
 
     private function show_detail($inHash) {
-        // TODO Router so umbauen dass er mit dynamischen /{id}/... routen umgehen kann
-        dd($inHash);
-        //Da dann auch das große vorschaubild nehmen
+        $DB = new Database();
+        $Template = new Template();
+
+        if(!(is_numeric($inHash['id']))) {
+            $this->level_not_found($inHash['id']);
+        }
+
+        $Level = new Level($inHash['id'], ListArt::AREDL);
+
+        if(!$Level->exists()) {
+            $this->level_not_found($inHash['id']);
+        }
+
+        set_title("Extreme Demon List - " . $Level->name());
+        load_css("aredl");
+        
+        display_info_message("This page is still under construction!", true);
+    }
+
+    private function level_not_found($level = "") {
+        set_title("Extreme Demon List");
+        echo "<h2></h2>";
+        display_info_message("Level <strong>" . $level . "</strong> was not found!", true);
+        die;
     }
 }

@@ -45,6 +45,7 @@ if ($DB->rows === 0) {
             break;
         }
     }
+    
 } else {
     $route = $DB->RSArray[0];
     $selected_script = $route["script"];
