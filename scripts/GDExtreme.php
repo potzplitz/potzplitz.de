@@ -24,7 +24,6 @@ class GDExtreme implements Routable {
         if($isChecked) {
             $query .= " join t_aredl_records r on a.id = r.level_id and r.user_id = :userid and r.progress > 99 and r.sart = 'AREDL' ";
             $binds['userid'] = SESS_USERID;
-            $checked = false;
         }
 
         if(!empty(INS['q'])) {

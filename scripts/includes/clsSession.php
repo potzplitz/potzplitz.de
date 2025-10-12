@@ -20,6 +20,14 @@ class Session {
 
         $DB->query($query, $binds);
 
+        if ($DB->rows < 1) {
+            define("SESS_USERID", -1);
+            define("SESS_ID", null);
+            define("SESS_IDENT", null);
+            define("SESSIONDATA", null);
+            return -1;
+        }
+
         define("SESS_USERID", $DB->RSArray[0]['userid']);
         define("SESS_IDENT", $_COOKIE['session']);
         define("SESS_ID", $DB->RSArray[0]['sess_id']);
@@ -29,19 +37,26 @@ class Session {
     public function create_session($userid) {
         $DB = new Database();
 
-        $query = "BEGIN manage_session.create_Session(:userid); END;";
-        $binds = [
-            "userid" => $userid
-        ];
+        $query = "SELECT * from sessions where userid = :userid and expires > sysdate";
+        $DB->query($query, ['userid' => $userid]);
 
-        $DB->query($query, $binds);
+        if($DB->rows > 0) {
+            $sess_ident = $DB->RSArray[0]['sess_ident'];
 
-        $query = "SELECT * from sessions where userid = :userid order by session_start desc fetch first 1 row only";
-        $binds = [
-            "userid" => $userid
-        ];
+        } else {
+            $binds = [
+                "userid" => $userid
+            ];
 
-        $DB->query($query, $binds);
-        setcookie("session", $DB->RSArray[0]['sess_ident'], time() + $DB->RSArray[0]['expires'], "/");
+            $query = "BEGIN manage_session.create_Session(:userid); END;";
+            $DB->query($query, $binds);
+
+            $query = "SELECT * from sessions where userid = :userid order by session_start desc fetch first 1 row only";
+            $DB->query($query, $binds);
+
+            $sess_ident = $DB->RSArray[0]['sess_ident'];
+        }
+
+        setcookie("session", $sess_ident, time() + $DB->RSArray[0]['expires'], "/");
     }
 }
