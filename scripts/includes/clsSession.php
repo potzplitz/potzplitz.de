@@ -57,6 +57,6 @@ class Session {
             $sess_ident = $DB->RSArray[0]['sess_ident'];
         }
 
-        setcookie("session", $sess_ident, time() + $DB->RSArray[0]['expires'], "/");
+        setcookie("session", $sess_ident, time() + 86400, "/");
     }
 }

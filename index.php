@@ -14,17 +14,47 @@ if ($static->serve($request)) {
 $DB = new Database();
 
 $query = "SELECT * from routes where route = :route";
-$binds = [
-    "route" => $request
-];
-
+$binds = ["route" => $request];
 $DB->query($query, $binds);
 
-if ($DB->rows > 0) {
-    $route = $DB->RSArray[0];
+$route = null;
+$selected_script = null;
+$header = 0;
+$params = [];
+$found = false;
 
+if ($DB->rows === 0) {
+    $query = "SELECT * FROM routes";
+    $DB->query($query, []);
+
+    foreach ($DB->RSArray as $r) {
+        $pattern = preg_replace('/\{[^\/]+\}/', '([^/]+)', $r['route']);
+        $pattern = "@^" . $pattern . "$@";
+
+        if (preg_match($pattern, $request, $matches)) {
+            array_shift($matches);
+            preg_match_all('/\{([^\/]+)\}/', $r['route'], $keys);
+
+            $params = array_combine($keys[1], $matches);
+            $params += json_decode($r["params"], true) ?? [];
+
+            $selected_script = $r["script"];
+            $header = (int)$r['header'];
+            $route = $r;
+            $found = true;
+            break;
+        }
+    }
+} else {
+    $route = $DB->RSArray[0];
     $selected_script = $route["script"];
-    define("PARAMS", json_decode($route["params"], true) ?? []);
+    $params = json_decode($route["params"], true) ?? [];
+    $header = (int)$route["header"];
+    $found = true;
+}
+
+if ($found && $selected_script) {
+    define("PARAMS", $params);
 
     $query = "INSERT into log_loc (app, infokz, sess_id, datum) values (:route, 'route', :sess_id, sysdate)";
     $binds = [
@@ -32,13 +62,13 @@ if ($DB->rows > 0) {
         "sess_id" => SESS_ID ?? -1
     ];
 
-    if((int)$route['header'] == 1) {
+    $DB->query($query, $binds);
+
+    if ($header === 1) {
         $Header = new Header();
         $Header->show_header();
         require_once("scripts/includes/incIcons.php");
     }
-
-    $DB->query($query, $binds);
 
     if (str_starts_with($request, '/api/gd')) {
         require_once("scripts/api/gd_api/" . $selected_script . ".php");
@@ -54,7 +84,6 @@ if ($DB->rows > 0) {
     $script->init();
 
 } else {
-
     $query = "BEGIN manage_log_tables.ERROR(:app, :infokz, :error, :userid); END;";
     $binds = [
         "app" => "Router",

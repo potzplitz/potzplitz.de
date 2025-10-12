@@ -149,7 +149,7 @@ class GDExtreme implements Routable {
 
     private function show_detail($inHash) {
         // TODO Router so umbauen dass er mit dynamischen /{id}/... routen umgehen kann
-
+        dd($inHash);
         //Da dann auch das große vorschaubild nehmen
     }
 }
