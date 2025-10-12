@@ -17,6 +17,10 @@
     background-position: center;
     background-repeat: no-repeat;
 
+    .gdAREDLContainer input {
+      pointer-events: all;
+    }
+
     .blur {
         position: absolute;
         top: 0;
@@ -229,7 +233,7 @@
   align-items: center;
   justify-content: center;
   width: 52px;
-  padding: 0; /* gleichmäßige Höhe */
+  padding: 0;
   border-radius: 10px;
   margin-left: 5px;
   border: 1px solid color-mix(in oklab, var(--border-1) 80%, white 10%);
@@ -275,4 +279,19 @@
   flex: 1;
   display: flex;
   justify-content: center;
+}
+
+.aredl_detail {
+  margin-top: 210px;
+  width: 80%;
+  height: 100%;
+  background-color: var(--bg-2);
+  border-radius: 8px;
+  border: var(--border-2) 1px solid ;
+  overflow: hidden;
+
+  img {
+     width: 100%;
+     height: auto;
+  }
 }

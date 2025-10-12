@@ -75,8 +75,6 @@ class GDExtreme implements Routable {
 
         $querytime = timer_end("AREDL_query");
 
-        // dd(TIMER_DURATION);
-
         $attemptsByLevel = [];
         foreach ($records as $rec) {
             $attemptsByLevel[$rec['level_id']] = $rec['attempts'];
@@ -171,7 +169,14 @@ class GDExtreme implements Routable {
         set_title("Extreme Demon List - " . $Level->name());
         load_css("aredl");
         
-        display_info_message("This page is still under construction!", true);
+        // display_info_message("This page is still under construction!", false);
+
+        $Template->load_template("/geometrydash/aredl_detail.php");
+        $Template->load_hash([
+            "IMAGE" => "https://levelthumbs.prevter.me/thumbnail/" . $Level->id() . "/medium"
+        ]);
+        $Template->compile_template();
+        $Template->show_template();
     }
 
     private function level_not_found($level = "") {

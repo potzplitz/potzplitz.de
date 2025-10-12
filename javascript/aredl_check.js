@@ -38,15 +38,21 @@ $(document).ready(function() {
         });
     });
 
-$('#check_levels').on('click', function(e) {
-    let checked = $('#hidden_checked').val();
+    $('#check_levels').on('click', function(e) {
+        let checked = $('#hidden_checked').val();
 
-    checked = (checked === 'true') ? 'false' : 'true';
+        checked = (checked === 'true') ? 'false' : 'true';
 
-    $('#hidden_checked').val(checked);
-    $('#searchbar').submit();
-});
+        $('#hidden_checked').val(checked);
+        $('#searchbar').submit();
+    });
 
-
+    document.querySelectorAll('.gdAREDLContainer input').forEach(el => {
+        el.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+    });
 
 });

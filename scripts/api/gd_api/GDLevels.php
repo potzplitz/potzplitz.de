@@ -36,7 +36,7 @@ class GDLevels implements Routable {
 
     public function init() {
         match($this->mode) {
-            "request" => $this->request(INS)
+            "request" => $this->request(array_merge(PARAMS, INS))
         };
     }
 
@@ -47,7 +47,7 @@ class GDLevels implements Routable {
         $api->set_rob_script("getGJLevels21.php");
         
         $response = $api->start_request([
-            "str" => (string)$inHash['levelid'],
+            "str" => (string)$inHash['id'],
             "star" => 1,
             "type" => 0,
             "secret" => "Wmfd2893gb7"
