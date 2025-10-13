@@ -71,3 +71,18 @@ function display_info_message($message, $exit = false) {
         die;
     }
 }
+
+function echo_json($message) {
+    if (!is_string($message)) {
+        $message = json_encode($message, JSON_UNESCAPED_UNICODE);
+    }
+
+    json_decode($message);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        header("Content-Type: application/json; charset=utf-8");
+        echo $message;
+        exit;
+    } else {
+        throw new Exception("Invalid JSON: " . json_last_error_msg());
+    }
+}

@@ -7,8 +7,10 @@ enum Methods {
 class RobApi {
     private Methods $method;
     private $script = "";
+    private $keyMap = [];
+    private $response = "";
     public function __construct() {
-        require_once("/scripts/includes/incGDKeys.php");
+        require_once("scripts/includes/incGDKeys.php");
     }
     public function start_request(array $data) {
 
@@ -35,6 +37,7 @@ class RobApi {
         }
 
         curl_close($ch);
+        $this->response = $response;
 
         return $response;
     }
@@ -43,7 +46,37 @@ class RobApi {
         $this->script = $script;
     }
 
+    public function set_keymap(array $keyMap) {
+        $this->keyMap = $keyMap;
+    }
+
     public function set_request_method(Methods $method) {
         $this->method = $method;
     } 
+
+    public function parse_api_response():string {
+        $parts = explode('#', $this->response);
+        $main = $parts[0];
+        $segments = explode(':', $main);
+
+        $data = [];
+        for ($i = 0; $i < count($segments) - 1; $i += 2) {
+            $key = trim($segments[$i]);
+            $value = isset($segments[$i + 1]) ? trim($segments[$i + 1]) : '';
+            if ($key !== '') {
+                $data[$key] = $value;
+            }
+        }
+
+        $named = [];
+        foreach ($data as $k => $v) {
+            $named[$this->keyMap[$k] ?? "unknown_$k"] = $v;
+        }
+
+        if (!empty($named['description_base64'])) {
+            $named['description'] = base64_decode($named['description_base64']);
+        }
+        
+        return json_encode($named, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
 }
