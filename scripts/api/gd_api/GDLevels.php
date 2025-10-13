@@ -53,7 +53,24 @@ class GDLevels implements Routable {
             "type" => 0,
             "secret" => "Wmfd2893gb7"
         ]);
+        // echo_json($api->parse_api_response());
+        
+        $response = $api->parse_api_response();
+        $response = json_decode($response, true);
 
-        echo_json($api->parse_api_response());
+        $url = 'https://history.geometrydash.eu/api/v1/date/level/' . $inHash['id'];
+        $history_response = file_get_contents($url);
+
+        if($history_response === false) {
+            throw new Exception("Error while fetching level History Data (upload time)");
+        }
+
+        $data = json_decode($history_response, true);
+        $data = $data['low']['estimation'];
+
+        $response = array_merge($response, ["upload_date" => $data]);
+
+        header("Content-Type: application/json");
+        echo json_encode($response, JSON_PRETTY_PRINT);
     }
 }
