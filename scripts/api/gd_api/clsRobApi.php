@@ -7,6 +7,9 @@ enum Methods {
 class RobApi {
     private Methods $method;
     private $script = "";
+    public function __construct() {
+        require_once("/scripts/includes/incGDKeys.php");
+    }
     public function start_request(array $data) {
 
         $url = 'https://www.boomlings.com/database/' . $this->script;
