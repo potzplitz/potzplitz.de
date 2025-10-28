@@ -34,6 +34,10 @@ class Level {
         return $this->results > 0;
     }
 
+    public function placement() {
+        return $this->levelInfo[0]['position'];
+    }
+
     public function name() {
         return $this->levelInfo[0]['name'];
     }
