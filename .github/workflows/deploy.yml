@@ -21,7 +21,7 @@ jobs:
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
-          rsync -avz --delete \
-            -e "sshpass -e ssh -o StrictHostKeyChecking=no" \
+          sshpass -e rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html
