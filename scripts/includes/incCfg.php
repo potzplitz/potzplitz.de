@@ -14,6 +14,7 @@ require_once("clsSession.php");
 require_once("incStaticFiles.php");
 require_once("objects/intRoutable.php");
 require_once("clsLevel.php");
+require_once("incCredentials.php");
 
 require_once(__DIR__ . "/../Header.php");
 
@@ -38,7 +39,6 @@ define("INS", $_REQUEST);
 define("SMTP_HOST", "smtp.gmail.com");
 define("SMTP_PORT", 587);
 define("SMTP_USER", "janschilfahrt@gmail.com");
-define("SMTP_PASS", "fyna ngdi ltct gjbu");
 define("SMTP_SECURE", "tls");
 
 // === Auth === \\
