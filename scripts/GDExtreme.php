@@ -173,7 +173,10 @@ class GDExtreme implements Routable {
 
         $Template->load_template("/geometrydash/aredl_detail.php");
         $Template->load_hash([
-            "IMAGE" => "https://levelthumbs.prevter.me/thumbnail/" . $Level->id() . "/medium"
+            "IMAGE" => "https://levelthumbs.prevter.me/thumbnail/" . $Level->id() . "/small",
+            "LEVELNAME" => $Level->name(),
+            "CREATOR" => $Level->creator(),
+            "PLACEMENT" => $Level->placement()
         ]);
         $Template->compile_template();
         $Template->show_template();
