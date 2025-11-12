@@ -1,6 +1,6 @@
   <main class="main-content">
     <div class="card-grid">
-      <a href="/gd/aredl" class="card">
+      <a href="/geometrydash/extremedemons" class="card">
         <i class="fa-solid fa-users"></i>
         <h2>Extreme Demon List</h2>
         <p>Check your progress on extreme demons here!</p>
