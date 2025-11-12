@@ -91,6 +91,10 @@ class GDExtreme implements Routable {
             $found = in_array($levelKey, $completedIds);
             $attempts = $attemptsByLevel[$levelKey] ?? 0;
 
+            $level_url = "/geometrydash/extremedemons/"; // maybe in component auslagern
+            $level_url .= str_replace("_", "-", $level['raw_name']);
+            $level_url .= "-" . $levelKey;
+
             $Template->load_hash([
                 "LEVELNAME" => $level['name'],
                 "LEVELNAME_RAW" => $level['raw_name'],
@@ -103,7 +107,8 @@ class GDExtreme implements Routable {
                 "LEVELID" => $levelKey,
                 "COMPLETED" => ($found ? "completed" : ""),
                 "BUTTONTEXT" => ($found ? "uncheck" : "check"),
-                "ATTEMPTS" => $attempts
+                "ATTEMPTS" => $attempts,
+                "LEVEL_LINK" => $level_url
             ]);
 
             $Template->compile_template();
@@ -117,7 +122,7 @@ class GDExtreme implements Routable {
             if ($i == $page) {
                 $pageLinks .= '<span class="page-link active">' . $i . '</span>';
             } else {
-                $pageLinks .= '<a href="/gd/aredl' . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
+                $pageLinks .= '<a href="/geometrydash/extremedemons' . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
             }
         }
 
@@ -156,14 +161,17 @@ class GDExtreme implements Routable {
         $DB = new Database();
         $Template = new Template();
 
-        if(!(is_numeric($inHash['id']))) {
-            $this->level_not_found($inHash['id']);
+        $parts = explode('-', $inHash['id']);
+        $levelid = end($parts);
+
+        if(!(is_numeric($levelid))) {
+            $this->level_not_found($levelid);
         }
 
-        $Level = new Level($inHash['id'], ListArt::AREDL);
+        $Level = new Level($levelid, ListArt::AREDL);
 
         if(!$Level->exists()) {
-            $this->level_not_found($inHash['id']);
+            $this->level_not_found($levelid);
         }
 
         set_title("Extreme Demon List - " . $Level->name());
@@ -176,7 +184,8 @@ class GDExtreme implements Routable {
             "IMAGE" => "https://levelthumbs.prevter.me/thumbnail/" . $Level->id() . "/small",
             "LEVELNAME" => $Level->name(),
             "CREATOR" => $Level->creator(),
-            "PLACEMENT" => $Level->placement()
+            "PLACEMENT" => $Level->placement(),
+            "VERIFIER" => $Level->verifier()
         ]);
         $Template->compile_template();
         $Template->show_template();

@@ -1,4 +1,4 @@
-<a href="/gd/aredl/<-LEVELID->">
+<a href="<-LEVEL_LINK->">
     <div class="gdAREDLContainer container <-COMPLETED->" style="background-image: url('<-THUMBNAIL->')">
         <div class="blur"></div>
         <h2 class="fs-4 fw-bold"><-LEVELNAME-></h2>
