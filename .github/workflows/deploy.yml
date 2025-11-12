@@ -22,6 +22,8 @@ jobs:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
           sshpass -e rsync -avz --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
             --exclude 'scripts/includes/incCredentials.php' \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
