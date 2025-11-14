@@ -10,13 +10,13 @@ class Template {
     public function load_hash($placeholder = []) {
         $this->hash = $placeholder;
     }
-
+    
     public function load_template($template) {
-        $this->template = $this->title;
-        $this->template .= file_get_contents(DIR_ROOT . "/templates/" . $template);
+        $this->template = file_get_contents(DIR_ROOT . "/templates/" . $template);
     }
 
     public function compile_template() {
+        $this->hash['TITLE'] = $this->title;
         $this->finished_template = preg_replace_callback('/<\-(.*?)\->/', function($matches) {
             $key = trim($matches[1]);
             if (isset($this->hash[$key])) {
@@ -31,7 +31,7 @@ class Template {
     }
 
     public function set_title($title) {
-        $this->title = "<title>$title</title>";
+        $this->title = $title;
     }
 
     public function show_template() {

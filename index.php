@@ -77,7 +77,18 @@ if ($found && $selected_script) {
     }
 
     $script = new $selected_script(PARAMS);
+    ob_start();
     $script->init();
+    $pageContent = ob_get_clean();
+
+    $Layout = new Template();
+    $Layout->load_template("general/layout.php");
+    $Layout->load_hash([
+        "CONTENT" => $pageContent
+    ]);
+    $Layout->compile_template();
+    echo $Layout->get_output();
+
 
 } else {
     $query = "BEGIN manage_log_tables.ERROR(:app, :infokz, :error, :userid); END;";
