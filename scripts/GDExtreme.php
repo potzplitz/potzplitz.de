@@ -17,6 +17,11 @@ class GDExtreme implements Routable {
         $Template = new Template();
         $Template2 = new Template();
 
+        set_title("Extreme Demon List");
+        
+        load_css("aredl");
+        load_js(['aredl_check']);
+
         timer_start("AREDL_query");
 
         $query = "SELECT * FROM t_aredl a";
@@ -65,10 +70,6 @@ class GDExtreme implements Routable {
 
         $Template->load_template("geometrydash/aredl_row.php");
         $Template2->load_template("geometrydash/aredl.php");
-        set_title("Extreme Demon List");
-
-        load_css("aredl");
-        load_js(['aredl_check']);
 
         $query = "SELECT * FROM t_aredl_records WHERE user_id = :userid AND progress > 99 AND sart = 'AREDL'";
         $DB->query($query, ['userid' => SESS_USERID]);

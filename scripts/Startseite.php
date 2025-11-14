@@ -1,13 +1,15 @@
 <?php
 
 class Startseite implements Routable {
+    private $mode;
     public function __construct($mode) {
-        load_css("main");
-        set_title("Startseite");
+        $this->mode = $mode;
     }
 
     public function init() {
-        echo urldecode(INS['message'] ?? '');
+        set_title("Startseite");
+
+        // CSS/JS nur hier definieren
         load_css("startseite");
 
         $Template = new Template();
