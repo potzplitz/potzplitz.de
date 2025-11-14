@@ -60,12 +60,6 @@ if ($found && $selected_script) {
 
     $DB->query($query, $binds);
 
-    if ($header === 1) {
-        $Header = new Header();
-        $Header->show_header();
-        require_once("scripts/includes/incIcons.php");
-    }
-
     if (str_starts_with($request, '/api/gd')) {
         require_once("scripts/api/gd_api/" . $selected_script . ".php");
 
@@ -77,14 +71,34 @@ if ($found && $selected_script) {
     }
 
     $script = new $selected_script(PARAMS);
+
     ob_start();
     $script->init();
+    load_css("main");
     $pageContent = ob_get_clean();
+
+    $BODY_HEADER = "";
+    if ($header === 1) {
+        $TemplateHeader = new Template();
+        $TemplateHeader->load_template("general/header.php");
+        $TemplateHeader->load_hash([
+            "USERNAME" => ARR_USERINFO['userid'] == -1 
+                ? "<a href='/account/login'>Login</a>"
+                : ARR_USERINFO['username'],
+            "PROFILEPICTURE" => "/static/profilepictures/default.jpg",
+            "HYPERLINK" => $request
+        ]);
+        $TemplateHeader->compile_template();
+        $BODY_HEADER = $TemplateHeader->get_output();
+    }
 
     $Layout = new Template();
     $Layout->load_template("general/layout.php");
     $Layout->load_hash([
-        "CONTENT" => $pageContent
+        "CONTENT" => $pageContent,
+        "ICONS" => file_get_contents("scripts/includes/incIcons.php"),
+        "HEAD_HTML" => get_collected_assets(),
+        "BODY_HEADER" => $BODY_HEADER
     ]);
     $Layout->compile_template();
     echo $Layout->get_output();
@@ -99,4 +113,6 @@ if ($found && $selected_script) {
         "userid" => SESS_USERID ?? -1
     ];
     $DB->query($query, $binds);
+
+    echo "404";
 }
