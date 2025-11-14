@@ -24,7 +24,8 @@ if ($DB->rows === 0) {
 
     foreach ($DB->RSArray as $r) {
         $pattern = preg_replace('/\{[^\/]+\}/', '([^/]+)', $r['route']);
-        $pattern = "@^" . $pattern . "$@";
+        $pattern = "@^" . rtrim($pattern, "/") . "/?$@";
+
 
         if (preg_match($pattern, $request, $matches)) {
             array_shift($matches);
