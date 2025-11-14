@@ -6,11 +6,6 @@ require_once("scripts/includes/incCfg.php");
 
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-$static = new StaticFiles(__DIR__ . "/../static");
-if ($static->serve($request)) {
-    exit;
-}
-
 $DB = new Database();
 
 $query = "SELECT * from routes where route = :route";
