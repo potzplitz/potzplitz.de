@@ -8,6 +8,7 @@ class Startseite implements Routable {
 
     public function init() {
         set_title("Startseite");
+        set_meta_tags("Homepage of potzplitz.de", "description");
 
         // CSS/JS nur hier definieren
         load_css("startseite");

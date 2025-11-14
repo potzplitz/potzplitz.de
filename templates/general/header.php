@@ -2,7 +2,7 @@
   <!-- <div class="error">test</div> -->
   <div class="header-left">
     <a href="<-HYPERLINK->" style="text-decoration: none;">
-      <span id="header">SITENAME</span>
+      <span id="header"><-TITLE-></span>
     </a>
   </div>
 

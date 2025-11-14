@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="de">
     <head>
+        <title>potzplitz.de - <-TITLE-></title>
+        <h1 style="position:absolute; left:-9999px;"><-TITLE-></h1>
         <meta charset="UTF-8">
+        <meta name="msvalidate.01" content="3E9B99C3FCEFC4CA0934CAB32615593D" />
+        <meta name="author" content="Jan Schilfahrt">
+        <-META_TAGS->
         <link rel='stylesheet' href='/styles/main.css'>
         <script src="/javascript/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
