@@ -11,7 +11,6 @@ require_once("clsOra.php");
 require_once("incHelperFunctions.php");
 require_once("clsUser.php");
 require_once("clsSession.php");
-require_once("incStaticFiles.php");
 require_once("objects/intRoutable.php");
 require_once("clsLevel.php");
 require_once("incCredentials.php");
