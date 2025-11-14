@@ -49,6 +49,6 @@ $user = new User(SESS_USERID);
 define("ARR_USERINFO", $user->load_user());
 
 // === Misc Function calls === \\
-if(substr(ROUTE, 1, 3) != 'api') {
+if(substr(ROUTE, 1, 3) != 'api' && !str_contains(ROUTE, "sitemap")) {
     load_essential_scripts();
 }
