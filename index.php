@@ -26,7 +26,6 @@ if ($DB->rows === 0) {
         $pattern = preg_replace('/\{[^\/]+\}/', '([^/]+)', $r['route']);
         $pattern = "@^" . rtrim($pattern, "/") . "/?$@";
 
-
         if (preg_match($pattern, $request, $matches)) {
             array_shift($matches);
             preg_match_all('/\{([^\/]+)\}/', $r['route'], $keys);
@@ -75,8 +74,11 @@ if ($found && $selected_script) {
 
     ob_start();
     $script->init();
+    
     load_css("main");
     $pageContent = ob_get_clean();
+
+$title = get_title();
 
     $BODY_HEADER = "";
     if ($header === 1) {
@@ -87,7 +89,8 @@ if ($found && $selected_script) {
                 ? "<a href='/account/login'>Login</a>"
                 : ARR_USERINFO['username'],
             "PROFILEPICTURE" => "/static/profilepictures/default.jpg",
-            "HYPERLINK" => $request
+            "HYPERLINK" => $request,
+            "TITLE" => $title
         ]);
         $TemplateHeader->compile_template();
         $BODY_HEADER = $TemplateHeader->get_output();
@@ -97,9 +100,11 @@ if ($found && $selected_script) {
     $Layout->load_template("general/layout.php");
     $Layout->load_hash([
         "CONTENT" => $pageContent,
+        "META_TAGS" => get_meta_tags_custom(),
         "ICONS" => file_get_contents("scripts/includes/incIcons.php"),
         "HEAD_HTML" => get_collected_assets(),
-        "BODY_HEADER" => $BODY_HEADER
+        "BODY_HEADER" => $BODY_HEADER,
+        "TITLE" => $title
     ]);
     $Layout->compile_template();
     echo $Layout->get_output();

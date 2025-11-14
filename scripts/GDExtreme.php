@@ -136,6 +136,17 @@ class GDExtreme implements Routable {
             $Hash['DISP_PAGES'] = "hidden";
         }
 
+        $query = "SELECT * from t_aredl order by position asc fetch first 3 rows only";
+        $DB->query($query, []);
+
+        $top3 = "";
+
+        for($i = 0; $i < $DB->rows; $i++) {
+            $top3 .= $DB->RSArray[$i]['name'] . ", ";
+        }
+
+        set_meta_tags("View the current Ranking of $ALLlevelcount Extreme Demons and track your progress! The Current top 3 hardest Levels are: $top3", "description");
+
         $Template2->load_hash([
             "LIST" => $list,
             "NEXT_PAGE" => $page + 1,

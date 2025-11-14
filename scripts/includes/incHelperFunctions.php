@@ -14,8 +14,7 @@ function load_js($scripts = []) {
 
 function set_title($title) {
     global $returnValsTitle;
-    $returnValsTitle .= '<title>' . $title . '</title>';
-    $returnValsTitle .= '<script>$("#header").text("' . $title . '");</script>';
+    $returnValsTitle = $title;
 }
 
 function get_title() {
@@ -23,6 +22,19 @@ function get_title() {
 
     return $returnValsTitle;
 }
+
+$returnMetaTags = '';
+
+function set_meta_tags($tags, $type) {
+    global $returnMetaTags;
+    $returnMetaTags .= '<meta name="' . htmlspecialchars($type) . '" content="' . htmlspecialchars($tags) . '">' . PHP_EOL;
+}
+
+function get_meta_tags_custom() {
+    global $returnMetaTags;
+    return $returnMetaTags;
+}
+
 
 function dd($value) {
     var_dump($value);
