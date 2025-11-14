@@ -8,6 +8,7 @@ class GDExtreme implements Routable {
         match($this->mode) {
             "view_list" => $this->view_list(),
             "detail" => $this->show_detail(array_merge(INS, PARAMS)),
+            "redirect" => $this->redirect_to_new_url(array_merge(INS, PARAMS)),
             default => null
         };
     }
@@ -91,9 +92,7 @@ class GDExtreme implements Routable {
             $found = in_array($levelKey, $completedIds);
             $attempts = $attemptsByLevel[$levelKey] ?? 0;
 
-            $level_url = "/geometrydash/extremedemons/"; // maybe in component auslagern
-            $level_url .= str_replace("_", "-", $level['raw_name']);
-            $level_url .= "-" . $levelKey;
+            $level_url = $this->generate_level_url($level['raw_name'], $levelKey);
 
             $Template->load_hash([
                 "LEVELNAME" => $level['name'],
@@ -196,5 +195,23 @@ class GDExtreme implements Routable {
         echo "<h2></h2>";
         display_info_message("Level <strong>" . $level . "</strong> was not found!", true);
         die;
+    }
+
+    private function redirect_to_new_url($params) {
+        $DB = new Database();
+        $DB->query("SELECT raw_name from t_aredl where id = :id", ['id' => $params['id']]);
+        $new_url = $this->generate_level_url($DB->RSArray[0]['raw_name'], $params['id']);
+
+        $new_url = rtrim(URL_HTBASE, "/") . $new_url;
+
+        header("Location: " . $new_url, true, 301);
+    }
+
+    private function generate_level_url($levelname, $levelid) {
+        $level_url = "/geometrydash/extremedemons/"; // maybe in component auslagern
+        $level_url .= str_replace("_", "-", $levelname);
+        $level_url .= "-" . $levelid;
+
+        return $level_url;
     }
 }
