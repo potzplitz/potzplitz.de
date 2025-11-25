@@ -74,7 +74,7 @@ class RobApi {
         }
 
         if (!empty($named['description_base64'])) {
-            $named['description'] = base64_decode($named['description_base64']);
+            $named['description'] = @utf8_decode(base64_decode($named['description_base64']));
         }
         
         return json_encode($named, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
