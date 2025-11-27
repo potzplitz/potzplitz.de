@@ -1,5 +1,5 @@
 <?php
-class GDLevels implements Routable {
+class APILevels implements Routable {
     private $keyMap = [
         1  => 'level_id',
         2  => 'level_name',

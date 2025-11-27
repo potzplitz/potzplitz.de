@@ -2,7 +2,7 @@
 
 enum ListArt {
     case AREDL;
-    case NCDL;
+    case NCL;
 }
 
 class Level {
@@ -16,7 +16,7 @@ class Level {
 
         $art = match($this->listArt) {
             ListArt::AREDL => 'AREDL',
-            ListArt::NCDL => 'NCL',
+            ListArt::NCL => 'NCL',
         };
 
         $query = "SELECT * from t_" . $art . " where id = :id";
@@ -55,7 +55,11 @@ class Level {
     }
 
     public function verifier() {
-        return $this->levelInfo[0]['verifier'];
+        if(!ListArt::NCL) {
+            return $this->levelInfo[0]['verifier'];
+        } else {
+            return "";
+        }
     }
 
     public function version() {

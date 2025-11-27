@@ -29,9 +29,10 @@ if ($DB->rows === 0) {
         if (preg_match($pattern, $request, $matches)) {
             array_shift($matches);
             preg_match_all('/\{([^\/]+)\}/', $r['route'], $keys);
-
-            $params = array_combine($keys[1], $matches);
-            $params += json_decode($r["params"], true) ?? [];
+            
+            $dbParams = json_decode($r["params"], true) ?? [];
+            $urlParams = array_combine($keys[1], $matches);
+            $params = array_merge($urlParams, $dbParams);
 
             $selected_script = $r["script"];
             $header = (int)$r['header'];

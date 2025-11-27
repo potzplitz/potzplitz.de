@@ -1,6 +1,7 @@
 <?php
-class GDExtreme implements Routable {
+class GDLevels implements Routable {
     private $mode = "";
+    private $viewMode = "aredl";
     public function __construct($mode) {
         $this->mode = $mode['mode'];
     }
@@ -9,28 +10,43 @@ class GDExtreme implements Routable {
             "view_list" => $this->view_list(),
             "detail" => $this->show_detail(array_merge(INS, PARAMS)),
             "redirect" => $this->redirect_to_new_url(array_merge(INS, PARAMS)),
+            "ncl" => $this->setNCLMode($this->mode),
             default => null
         };
     }
+
+    private function setNCLMode($mode) {
+        $this->viewMode = "ncl";
+        if((PARAMS['mode2'] ?? "") == "detail") {
+            $this->show_detail(array_merge(INS, PARAMS));
+        } else {
+            $this->view_list();
+        }
+    }
+
     private function view_list() {
         $DB = new Database();
         $Template = new Template();
         $Template2 = new Template();
 
-        set_title("Extreme Demon List");
-        
+        if($this->viewMode == "aredl") {
+            set_title("Extreme Demon List");
+        } else {
+            set_title("Nine Circles Demon List");
+        }
+
         load_css("aredl");
         load_js(['aredl_check']);
 
-        timer_start("AREDL_query");
+        timer_start("LEVEL_query");
 
-        $query = "SELECT * FROM t_aredl a";
+        $query = "SELECT * FROM t_" . $this->viewMode . " a";
         $binds = [];
 
         $isChecked = filter_var(INS['checked'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if($isChecked) {
-            $query .= " join t_aredl_records r on a.id = r.level_id and r.user_id = :userid and r.progress > 99 and r.sart = 'AREDL' ";
+            $query .= " join t_levelrecords r on a.id = r.level_id and r.user_id = :userid and r.progress > 99 and r.sart = '" . strtoupper($this->viewMode) . "' ";
             $binds['userid'] = SESS_USERID;
         }
 
@@ -57,9 +73,16 @@ class GDExtreme implements Routable {
         $ges_pages = ceil($DB->rows / $per_page);
         $ALLlevelcount = $DB->rows;
 
-        $query .= " order by a.position asc offset :offset rows fetch first 100 rows only";
-        $binds['offset'] = $offset;
+        if($this->viewMode == "aredl") {
+            $query .= " order by a.position asc";
+        } else {
+            $query .= " order by (select case when a.position = 'TBA' then 999999 else to_number(a.position) end)";
+        }
 
+        $query .= " offset :offset rows fetch first 100 rows only";
+
+        $binds['offset'] = $offset;
+        // dd($query);
         $DB->query($query, $binds);
 
         $page = (INS['page'] ?? 1);
@@ -68,14 +91,14 @@ class GDExtreme implements Routable {
         $levels = $DB->RSArray;
         $levelcount = $DB->rows;
 
-        $Template->load_template("geometrydash/aredl_row.php");
-        $Template2->load_template("geometrydash/aredl.php");
+        $Template->load_template("geometrydash/levellist_row.php");
+        $Template2->load_template("geometrydash/levellist.php");
 
-        $query = "SELECT * FROM t_aredl_records WHERE user_id = :userid AND progress > 99 AND sart = 'AREDL'";
+        $query = "SELECT * FROM t_levelrecords WHERE user_id = :userid AND progress > 99 AND sart = '" . strtoupper($this->viewMode) . "'";
         $DB->query($query, ['userid' => SESS_USERID]);
         $records = $DB->RSArray;
 
-        $querytime = timer_end("AREDL_query");
+        $querytime = timer_end("LEVEL_query");
 
         $attemptsByLevel = [];
         foreach ($records as $rec) {
@@ -95,21 +118,26 @@ class GDExtreme implements Routable {
 
             $level_url = $this->generate_level_url($level['raw_name'], $levelKey);
 
-            $Template->load_hash([
+            $templateKeys = [];
+
+            if($this->viewMode == "aredl") {
+                $templateKeys['verifier'] = $level['verifier'];
+            }
+
+            $Template->load_hash(array_merge([
                 "LEVELNAME" => $level['name'],
                 "LEVELNAME_RAW" => $level['raw_name'],
                 "PLACEMENT" => $level['position'],
                 "CREATOR" => $level['creator'],
                 "ID" => $levelKey,
-                "VERIFIER" => $level['verifier'],
                 "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
                 "COUNTER" => $counter,
                 "LEVELID" => $levelKey,
                 "COMPLETED" => ($found ? "completed" : ""),
                 "BUTTONTEXT" => ($found ? "uncheck" : "check"),
                 "ATTEMPTS" => $attempts,
-                "LEVEL_LINK" => $level_url
-            ]);
+                "LEVEL_LINK" => $level_url,
+            ], $templateKeys));
 
             $Template->compile_template();
             $list .= $Template->get_output();
@@ -118,11 +146,17 @@ class GDExtreme implements Routable {
         $pageLinks = '';
         $range = ($ges_pages < 3 ? $ges_pages : 3);
 
+        if($this->viewMode == "aredl") {
+            $urltype = "extremedemons";
+        } else {
+            $urltype = "ninecircles";
+        }
+
         for ($i = max(1, $page - $range); $i <= min($ges_pages, $page + $range); $i++) {
             if ($i == $page) {
                 $pageLinks .= '<span class="page-link active">' . $i . '</span>';
             } else {
-                $pageLinks .= '<a href="/geometrydash/extremedemons' . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
+                $pageLinks .= '<a href="/geometrydash/' . $urltype . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
             }
         }
 
@@ -136,7 +170,7 @@ class GDExtreme implements Routable {
             $Hash['DISP_PAGES'] = "hidden";
         }
 
-        $query = "SELECT * from t_aredl order by position asc fetch first 3 rows only";
+        $query = "SELECT * from t_" . $this->viewMode . " order by position asc fetch first 3 rows only";
         $DB->query($query, []);
 
         $top3 = "";
@@ -145,7 +179,13 @@ class GDExtreme implements Routable {
             $top3 .= $DB->RSArray[$i]['name'] . ", ";
         }
 
-        set_meta_tags("View the current Ranking of $ALLlevelcount Extreme Demons and track your progress! The Current top 3 hardest Levels are: $top3", "description");
+        if($this->viewMode == "aredl") {
+            set_meta_tags("View the current Ranking of $ALLlevelcount Extreme Demons and track your progress! The Current top 3 hardest Levels are: $top3", "description");
+            $url_listtype = "extremedemons";
+        } else {
+            set_meta_tags("View the current Ranking of $ALLlevelcount Nine Circles List Demons and track your progress! The Current top 3 hardest Levels are: $top3", "description");
+            $url_listtype = "ninecircles";
+        }
 
         $Template2->load_hash([
             "LIST" => $list,
@@ -161,7 +201,9 @@ class GDExtreme implements Routable {
             "CHECKED" => ($isChecked ? "true" : "false"),
             "COMPLETED" => (($found ?? false) ? "completed" : ""),
             "LEVELCOUNT" => $ALLlevelcount,
-            "QUERYTIME" => $querytime
+            "QUERYTIME" => $querytime,
+            "URL_LISTTYPE" => $url_listtype,
+            "SART" => strtoupper($this->viewMode)
         ]);
 
         $Template2->compile_template();
@@ -178,19 +220,24 @@ class GDExtreme implements Routable {
         if(!(is_numeric($levelid))) {
             $this->level_not_found($levelid);
         }
-
-        $Level = new Level($levelid, ListArt::AREDL);
+ 
+        $Level = new Level($levelid, ($this->viewMode == "aredl" ? ListArt::AREDL : ListArt::NCL));
 
         if(!$Level->exists()) {
             $this->level_not_found($levelid);
         }
 
-        set_title("Extreme Demon List - " . $Level->name());
+        if($this->viewMode == "aredl") {
+            set_title("Extreme Demon List - " . $Level->name());
+        } else {
+            set_title("Nine Circles Demon List - " . $Level->name());
+        }
+
         load_css("aredl");
         
         // display_info_message("This page is still under construction!", false);
 
-        $Template->load_template("/geometrydash/aredl_detail.php");
+        $Template->load_template("/geometrydash/level_detail.php");
         $Template->load_hash([
             "IMAGE" => "https://levelthumbs.prevter.me/thumbnail/" . $Level->id() . "/small",
             "LEVELNAME" => $Level->name(),
@@ -203,7 +250,12 @@ class GDExtreme implements Routable {
     }
 
     private function level_not_found($level = "") {
-        set_title("Extreme Demon List");
+        if($this->viewMode == "aredl") {
+            set_title("Extreme Demon List");
+        } else {
+            set_title("Nine Circles Demon List");
+        }
+
         echo "<h2></h2>";
         display_info_message("Level <strong>" . $level . "</strong> was not found!", true);
         die;
@@ -220,7 +272,14 @@ class GDExtreme implements Routable {
     }
 
     private function generate_level_url($levelname, $levelid) {
-        $level_url = "/geometrydash/extremedemons/"; // maybe in component auslagern
+
+        if($this->viewMode == "aredl") {
+            $urltype = "extremedemons";
+        } else {
+            $urltype = "ninecircles";
+        }
+
+        $level_url = "/geometrydash/$urltype/"; // maybe in component auslagern
         $level_url .= str_replace("_", "-", $levelname);
         $level_url .= "-" . $levelid;
 

@@ -1,5 +1,5 @@
 <div class="list">
-    <form id="searchbar" method="POST" action="/geometrydash/extremedemons">
+    <form id="searchbar" method="POST" action="/geometrydash/<-URL_LISTTYPE->">
         <div class="search-wrap">
             <button id="check_levels" type="button" class="<-COMPLETED-> submit-aredl-search" style="margin-right: 5px;">
                 <svg viewBox="0 0 24 24" aria-hidden="true" style="color: white;">
@@ -22,18 +22,20 @@
         </span>
     </p>
     <div class="paging d-flex justify-content-center align-items-center gap-2 my-4">
-        <a href="/geometrydash/extremedemons?page=<-PREV_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_PREV_PAGE->">‹</a>
+        <a href="/geometrydash/<-URL_LISTTYPE->?page=<-PREV_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_PREV_PAGE->">‹</a>
     <div class="page-numbers">
         <-PAGE_LINKS->
     </div>
-    <a href="/geometrydash/extremedemons?page=<-NEXT_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_NEXT_PAGE->">›</a>
+    <a href="/geometrydash/<-URL_LISTTYPE->?page=<-NEXT_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_NEXT_PAGE->">›</a>
     </div>
     <-LIST->
     <div class="paging d-flex justify-content-center align-items-center gap-2 my-4">
-        <a href="/geometrydash/extremedemons?page=<-PREV_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_PREV_PAGE->">‹</a>
+        <a href="/geometrydash/<-URL_LISTTYPE->?page=<-PREV_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_PREV_PAGE->">‹</a>
         <div class="page-numbers">
             <-PAGE_LINKS->
         </div>
-        <a href="/geometrydash/extremedemons?page=<-NEXT_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_NEXT_PAGE->">›</a>
+        <a href="/geometrydash/<-URL_LISTTYPE->?page=<-NEXT_PAGE->" class="<-DISP_PAGES-> page-link <-DISP_NEXT_PAGE->">›</a>
     </div>
 </div>
+
+<div style="display: none" class="transfer_sart" data-sart="<-SART->"></div>
