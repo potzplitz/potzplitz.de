@@ -5,6 +5,7 @@ $(document).ready(function() {
         let $container = $button.closest('.gdAREDLContainer');
         let valTextfield = $('input[data-for="' + clicked_id + '"]').val();
         let valLevelid = $('input[data-forlvl="' + clicked_id + '"]').data('levelid');
+        let sart = $('.transfer_sart').data('sart');
 
         let isCompleted = $container.hasClass('completed');
         let checked = isCompleted ? 0 : 1;
@@ -22,7 +23,7 @@ $(document).ready(function() {
         formData.append('completed', !isCompleted);
         formData.append('levelid', valLevelid);
         formData.append('progress', 100);
-        formData.append('sart', "AREDL");
+        formData.append('sart', sart);
         formData.append('checked', checked);
 
         fetch('/api/submit/record', {
