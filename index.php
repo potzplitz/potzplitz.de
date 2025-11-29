@@ -61,54 +61,63 @@ if ($found && $selected_script) {
 
     // $DB->query($query, $binds);
 
+    $apirequest = false;
+
     if (str_starts_with($request, '/api/gd')) {
         require_once("scripts/api/gd_api/" . $selected_script . ".php");
-
+        $apirequest = true;
     } else if (str_starts_with($request, '/api')) {
         require_once("scripts/api/" . $selected_script . ".php");
-
+        $apirequest = true;
     } else {
         require_once("scripts/" . $selected_script . ".php");
     }
 
     $script = new $selected_script(PARAMS);
 
-    ob_start();
-    $script->init();
-    
-    load_css("main");
-    $pageContent = ob_get_clean();
+    if($apirequest) {
+        header('Content-Type: application/json');
+        $script->init();
+        exit();
+        
+    } else {
+        ob_start();
+        $script->init();
+        
+        load_css("main");
+        $pageContent = ob_get_clean();
 
-$title = get_title();
+        $title = get_title();
 
-    $BODY_HEADER = "";
-    if ($header === 1) {
-        $TemplateHeader = new Template();
-        $TemplateHeader->load_template("general/header.php");
-        $TemplateHeader->load_hash([
-            "USERNAME" => ARR_USERINFO['userid'] == -1 
-                ? "<a href='/account/login'>Login</a>"
-                : ARR_USERINFO['username'],
-            "PROFILEPICTURE" => "/static/profilepictures/default.jpg",
-            "HYPERLINK" => $request,
+        $BODY_HEADER = "";
+        if ($header === 1) {
+            $TemplateHeader = new Template();
+            $TemplateHeader->load_template("general/header.php");
+            $TemplateHeader->load_hash([
+                "USERNAME" => ARR_USERINFO['userid'] == -1 
+                    ? "<a href='/account/login'>Login</a>"
+                    : ARR_USERINFO['username'],
+                "PROFILEPICTURE" => "/static/profilepictures/default.jpg",
+                "HYPERLINK" => $request,
+                "TITLE" => $title
+            ]);
+            $TemplateHeader->compile_template();
+            $BODY_HEADER = $TemplateHeader->get_output();
+        }
+
+        $Layout = new Template();
+        $Layout->load_template("general/layout.php");
+        $Layout->load_hash([
+            "CONTENT" => $pageContent,
+            "META_TAGS" => get_meta_tags_custom(),
+            "ICONS" => file_get_contents("scripts/includes/incIcons.php"),
+            "HEAD_HTML" => get_collected_assets(),
+            "BODY_HEADER" => $BODY_HEADER,
             "TITLE" => $title
         ]);
-        $TemplateHeader->compile_template();
-        $BODY_HEADER = $TemplateHeader->get_output();
+        $Layout->compile_template();
+        echo $Layout->get_output();
     }
-
-    $Layout = new Template();
-    $Layout->load_template("general/layout.php");
-    $Layout->load_hash([
-        "CONTENT" => $pageContent,
-        "META_TAGS" => get_meta_tags_custom(),
-        "ICONS" => file_get_contents("scripts/includes/incIcons.php"),
-        "HEAD_HTML" => get_collected_assets(),
-        "BODY_HEADER" => $BODY_HEADER,
-        "TITLE" => $title
-    ]);
-    $Layout->compile_template();
-    echo $Layout->get_output();
 
 
 } else {

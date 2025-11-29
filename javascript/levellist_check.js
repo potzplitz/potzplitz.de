@@ -31,11 +31,20 @@ $(document).ready(function() {
             body: formData
         })
         .then(response => response.json())
-        .then(data => {
-            console.log('Antwort vom Server:', data);
+        .then(data => {console.log(data);
+            
+            if(data.message.length > 0) {
+                const msg = new Message("error");
+                msg.setMessage(data.message);
+                msg.showMessage();
+            }
         })
         .catch(error => {
             console.error('Fehler beim Senden:', error);
+            console.log(error);
+            const msg = new Message("error");
+            msg.setMessage("Error Checking level: " + error);
+            msg.showMessage();
         });
     });
 

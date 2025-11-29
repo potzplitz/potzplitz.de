@@ -1,3 +1,36 @@
+#messagebox {
+  position: absolute;
+  z-index: 1000;
+  right: 0.5%;
+  top: 10%;
+  width: 280px;
+  min-height: 45px;
+  height: auto;
+  border-radius: 7px;
+  border-width: 1px;
+  border-style: solid; }
+  #messagebox p {
+    width: 100%;
+    text-align: center;
+    margin-top: 11px; }
 
+body {
+  overflow-x: hidden; }
+
+.errorColor {
+  background-color: #570101;
+  border-color: #cc0000; }
+
+.logColor {
+  background-color: #2e2e2e;
+  border-color: #555555; }
+
+.infoColor {
+  background-color: #012a57;
+  border-color: #007acc; }
+
+.debugColor {
+  background-color: #013d01;
+  border-color: #00cc00; }
 
 /*# sourceMappingURL=error_modal.css.map */

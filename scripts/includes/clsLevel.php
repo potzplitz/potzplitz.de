@@ -55,7 +55,7 @@ class Level {
     }
 
     public function verifier() {
-        if(!ListArt::NCL) {
+        if($this->listArt !== ListArt::NCL) {
             return $this->levelInfo[0]['verifier'];
         } else {
             return "";
