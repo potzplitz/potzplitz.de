@@ -149,7 +149,7 @@ class GDLevels implements Routable {
                 "PLACEMENT" => $level['position'],
                 "CREATOR" => $level['creator'],
                 "ID" => $levelKey,
-                "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
+                // "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
                 "COUNTER" => $counter,
                 "LEVELID" => $levelKey,
                 "COMPLETED" => ($found ? "completed" : ""),
