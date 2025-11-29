@@ -1,6 +1,12 @@
 <div class="list">
     <form id="searchbar" method="POST" action="/geometrydash/<-URL_LISTTYPE->">
         <div class="search-wrap">
+            <button id="view_unchecked_levels" type="button" class="<-UNCOMPLETED_FILTER-> submit-aredl-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true" style="color: white;">
+                    <use href="#uncompleted"></use>
+                </svg>
+            </button>
+            <input name="uncompleted" value="<-CHECKED_UNCOMPLETED->" type="hidden" id="hidden_uncompleted">
             <button id="check_levels" type="button" class="<-COMPLETED-> submit-aredl-search" style="margin-right: 5px;">
                 <svg viewBox="0 0 24 24" aria-hidden="true" style="color: white;">
                     <use href="#checkmark"></use>

@@ -105,3 +105,14 @@ function get_collected_assets() {
 
     return $assets;
 }
+
+function js_alert($value) {
+    $dump = convert_var_dump_to_string($value);
+    echo '<script>alert(' . json_encode($dump) . ');</script>';
+}
+
+function convert_var_dump_to_string($value) {
+    ob_start();
+    var_dump($value);
+    return ob_get_clean();
+}

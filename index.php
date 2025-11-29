@@ -59,7 +59,7 @@ if ($found && $selected_script) {
         "sess_id" => SESS_ID ?? -1
     ];
 
-    $DB->query($query, $binds);
+    // $DB->query($query, $binds);
 
     if (str_starts_with($request, '/api/gd')) {
         require_once("scripts/api/gd_api/" . $selected_script . ".php");
@@ -119,7 +119,7 @@ $title = get_title();
         "error" => "Falsche Route! => IP: " . $_SERVER['REMOTE_ADDR'],
         "userid" => SESS_USERID ?? -1
     ];
-    $DB->query($query, $binds);
+    // $DB->query($query, $binds);
 
     echo "404";
 }

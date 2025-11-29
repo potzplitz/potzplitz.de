@@ -41,10 +41,25 @@ $(document).ready(function() {
 
     $('#check_levels').on('click', function(e) {
         let checked = $('#hidden_checked').val();
-
         checked = (checked === 'true') ? 'false' : 'true';
-
         $('#hidden_checked').val(checked);
+
+        if(checked === 'true') {
+            $('#hidden_uncompleted').val('false');
+        }
+        
+        $('#searchbar').submit();
+    });
+    
+    $('#view_unchecked_levels').on('click', function(e) {
+        let checked = $('#hidden_uncompleted').val();
+        checked = (checked === 'true') ? 'false' : 'true';
+        $('#hidden_uncompleted').val(checked);
+
+        if(checked === 'true') {
+            $('#hidden_checked').val('false');
+        }
+        
         $('#searchbar').submit();
     });
 

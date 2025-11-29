@@ -36,18 +36,29 @@ class GDLevels implements Routable {
         }
 
         load_css("aredl");
-        load_js(['aredl_check']);
+        load_js(['levellist_check']);
 
         timer_start("LEVEL_query");
 
         $query = "SELECT * FROM t_" . $this->viewMode . " a";
         $binds = [];
 
-        $isChecked = filter_var(INS['checked'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $isChecked = filter_var(INS['checked'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für schon geschafft gechecked
+        $checkedUncompleted = filter_var(INS['uncompleted'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für den nicht geschafft checked
 
-        if($isChecked) {
+        if($isChecked && SESS_USERID != -1) {
+            $checkedUncompleted = false;
             $query .= " join t_levelrecords r on a.id = r.level_id and r.user_id = :userid and r.progress > 99 and r.sart = '" . strtoupper($this->viewMode) . "' ";
             $binds['userid'] = SESS_USERID;
+
+        } else if($checkedUncompleted && SESS_USERID != -1) {
+            $isChecked = false;
+            $query .= " left join t_levelrecords r on a.id = r.level_id and r.user_id = :userid and r.sart = '" . strtoupper($this->viewMode) . "' ";
+            $binds['userid'] = SESS_USERID;
+        
+        } else {
+            $isChecked = false;
+            $checkedUncompleted = false;
         }
 
         if(!empty(INS['q'])) {
@@ -59,10 +70,18 @@ class GDLevels implements Routable {
                 $query .= "a.id = :query_id or ";
                 $binds['query_id'] = $q;
             }
-            
+
             $query .= " lower(a.name) like :query or lower(a.raw_name) like :query)";
 
+            if($checkedUncompleted) {
+                $query .= " and (r.progress <= 99 or r.progress is null)";
+            }
+
             $binds['query'] = "%" . $q . "%";
+        } else {
+            if($checkedUncompleted) {
+                $query .= " where (r.progress <= 99 or r.progress is null)";
+            }
         }
 
         $page = (INS['page'] ?? 1);
@@ -82,8 +101,8 @@ class GDLevels implements Routable {
         $query .= " offset :offset rows fetch first 100 rows only";
 
         $binds['offset'] = $offset;
-        // dd($query);
-        $DB->query($query, $binds);
+
+        $DB->query($query, $binds); // execute built sql query
 
         $page = (INS['page'] ?? 1);
         $page = max(1, min($page, $ges_pages ?: 1));
@@ -156,7 +175,16 @@ class GDLevels implements Routable {
             if ($i == $page) {
                 $pageLinks .= '<span class="page-link active">' . $i . '</span>';
             } else {
-                $pageLinks .= '<a href="/geometrydash/' . $urltype . (!empty(INS['q']) ? '?q=' . urlencode(INS['q']) . '&' : '?') . 'page=' . $i . '" class="page-link">'.$i.'</a>';
+                $params = array_filter([
+                    'q' => INS['q'] ?? null,
+                    'checked' => $isChecked ? 'true' : null,
+                    'uncompleted' => $checkedUncompleted ? 'true' : null,
+                    'page' => $i
+                ]);
+                
+                $queryString = '?' . http_build_query($params);
+                
+                $pageLinks .= '<a href="/geometrydash/' . $urltype . $queryString . '" class="page-link">'.$i.'</a>';
             }
         }
 
@@ -176,7 +204,7 @@ class GDLevels implements Routable {
         $top3 = "";
 
         for($i = 0; $i < $DB->rows; $i++) {
-            $top3 .= $DB->RSArray[$i]['name'] . ", ";
+            $top3 .= $DB->RSArray[$i]['name'] . ($i == 2 ? "" : ", ");
         }
 
         if($this->viewMode == "aredl") {
@@ -199,7 +227,9 @@ class GDLevels implements Routable {
             "DISP_PAGES" => $Hash['DISP_PAGES'],
             "QUERY" => INS['q'] ?? '',
             "CHECKED" => ($isChecked ? "true" : "false"),
-            "COMPLETED" => (($found ?? false) ? "completed" : ""),
+            "COMPLETED" => (($isChecked ?? false) ? "completed" : ""),
+            "CHECKED_UNCOMPLETED" => ($checkedUncompleted ? "true" : "false"),
+            "UNCOMPLETED_FILTER" => (($checkedUncompleted ?? false) ? "completed" : ""),
             "LEVELCOUNT" => $ALLlevelcount,
             "QUERYTIME" => $querytime,
             "URL_LISTTYPE" => $url_listtype,
@@ -234,8 +264,6 @@ class GDLevels implements Routable {
         }
 
         load_css("aredl");
-        
-        // display_info_message("This page is still under construction!", false);
 
         $Template->load_template("/geometrydash/level_detail.php");
         $Template->load_hash([
