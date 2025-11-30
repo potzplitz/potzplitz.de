@@ -46,7 +46,7 @@ class GDLevels implements Routable {
         $isChecked = filter_var(INS['checked'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für schon geschafft gechecked
         $checkedUncompleted = filter_var(INS['uncompleted'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für den nicht geschafft checked
 
-        if($isChecked || $checkedUncompleted && SESS_USERID != -1) {
+        if(($isChecked || $checkedUncompleted) && SESS_USERID != -1) {
             $query .= ", r.attempts, r.progress";
         }
 
