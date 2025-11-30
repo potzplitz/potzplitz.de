@@ -40,11 +40,17 @@ class GDLevels implements Routable {
 
         timer_start("LEVEL_query");
 
-        $query = "SELECT * FROM t_" . $this->viewMode . " a";
+        $query = "SELECT a.id as level_id, a.* ";
         $binds = [];
 
         $isChecked = filter_var(INS['checked'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für schon geschafft gechecked
         $checkedUncompleted = filter_var(INS['uncompleted'] ?? false, FILTER_VALIDATE_BOOLEAN); // filter für den nicht geschafft checked
+
+        if($isChecked || $checkedUncompleted) {
+            $query .= ", r.attempts, r.progress";
+        }
+
+        $query .= " from t_" . $this->viewMode . " a";
 
         if($isChecked && SESS_USERID != -1) {
             $checkedUncompleted = false;
@@ -100,6 +106,8 @@ class GDLevels implements Routable {
 
         $query .= " offset :offset rows fetch first 100 rows only";
 
+        // dd($query);
+
         $binds['offset'] = $offset;
 
         $DB->query($query, $binds); // execute built sql query
@@ -149,11 +157,11 @@ class GDLevels implements Routable {
                 "PLACEMENT" => $level['position'],
                 "CREATOR" => $level['creator'],
                 "ID" => $levelKey,
-                // "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
+                "THUMBNAIL" => "https://levelthumbs.prevter.me/thumbnail/" . $levelKey . "/small",
                 "COUNTER" => $counter,
                 "LEVELID" => $levelKey,
                 "COMPLETED" => ($found ? "completed" : ""),
-                "BUTTONTEXT" => ($found ? "uncheck" : "check"),
+                "BUTTONTEXT" => ($found ? "Uncheck" : "Check"),
                 "ATTEMPTS" => $attempts,
                 "LEVEL_LINK" => $level_url,
             ], $templateKeys));

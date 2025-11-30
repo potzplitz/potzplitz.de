@@ -54,7 +54,8 @@
     background-color: var(--border-1);
     color: white; }
   .gdAREDLContainer .checkbutton {
-    right: 20px; }
+    right: 20px;
+    width: 75px; }
   .gdAREDLContainer .attemptsfield {
     right: 100px;
     width: 13%; }

@@ -7,16 +7,10 @@ $(document).ready(function() {
         let valLevelid = $('input[data-forlvl="' + clicked_id + '"]').data('levelid');
         let sart = $('.transfer_sart').data('sart');
 
+        $button.val('...');
+
         let isCompleted = $container.hasClass('completed');
         let checked = isCompleted ? 0 : 1;
-
-        if (isCompleted) {
-            $container.removeClass('completed');
-            $button.val('Check');
-        } else {
-            $container.addClass('completed');
-            $button.val('Uncheck');
-        }
 
         let formData = new FormData();
         formData.append('attempts', valTextfield);
@@ -31,12 +25,21 @@ $(document).ready(function() {
             body: formData
         })
         .then(response => response.json())
-        .then(data => {console.log(data);
-            
-            if(data.message.length > 0) {
+        .then(data => {            
+            if (data.message && data.message.length > 0) {
                 const msg = new Message("error");
                 msg.setMessage(data.message);
                 msg.showMessage();
+
+                $button.val('Check');
+            } else {
+                if (isCompleted) {
+                    $container.removeClass('completed');
+                    $button.val('Check');
+                } else {
+                    $container.addClass('completed');
+                    $button.val('Uncheck');
+                }
             }
         })
         .catch(error => {

@@ -5,6 +5,11 @@
         <h2>Extreme Demon List</h2>
         <p>Check your progress on extreme demons here!</p>
       </a>
+      <a href="/geometrydash/ninecircles" class="card">
+        <i class="fa-solid fa-users"></i>
+        <h2>Nine Circles Demon List</h2>
+        <p>Check your progress on nine circles demons here!</p>
+      </a>
       <a href="#" class="card">
         <i class="fa-solid fa-chart-line"></i>
         <h2>Score Sniper</h2>
