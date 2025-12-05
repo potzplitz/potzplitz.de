@@ -3,6 +3,7 @@
 class User {
     public array $user = [];
     private $userid = -1;
+    private $is_admin = false;
 
     public function __construct($userid) {
         $this->userid = $userid;
@@ -29,9 +30,15 @@ class User {
         $user = [
             "userid" => $DB->RSArray[0]['userid'],
             "username" => $DB->RSArray[0]['username'],
-            "email" => $DB->RSArray[0]['email']
+            "email" => $DB->RSArray[0]['email'],
+            "is_admin" => (int)(empty($DB->RSArray[0]['admin']) ? 0 : $DB->RSArray[0]['admin'])
         ];
+        $this->user = $user;
 
         return $user;
+    }
+
+    public function isAdmin(): bool {
+        return isset($this->user['is_admin']) && (int)$this->user['is_admin'] === 1;
     }
 }

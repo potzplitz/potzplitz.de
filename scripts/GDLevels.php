@@ -40,6 +40,7 @@ class GDLevels implements Routable {
 
         timer_start("LEVEL_query");
 
+        // TABLES
         $query = "SELECT a.id as level_id, a.* ";
         $binds = [];
 
@@ -67,6 +68,7 @@ class GDLevels implements Routable {
             $checkedUncompleted = false;
         }
 
+        // WHAT
         if(!empty(INS['q'])) {
             $q = urldecode(trim(strtolower(INS['q'])));
 
@@ -98,6 +100,7 @@ class GDLevels implements Routable {
         $ges_pages = ceil($DB->rows / $per_page);
         $ALLlevelcount = $DB->rows;
 
+        // ORDER BY
         if($this->viewMode == "aredl") {
             $query .= " order by a.position asc";
         } else {

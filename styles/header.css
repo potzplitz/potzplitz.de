@@ -1,0 +1,13 @@
+.header-right .admin {
+  margin-right: 15px;
+  margin-top: 3px; }
+  .header-right .admin a > button {
+    background-color: #700819;
+    color: white;
+    border-radius: 7px;
+    border: solid 1px #2d0370;
+    padding: 6px;
+    padding-top: 2px !important;
+    padding-bottom: 4px !important; }
+
+/*# sourceMappingURL=header.css.map */
