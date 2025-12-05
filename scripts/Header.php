@@ -1,28 +1,25 @@
 <?php
 
 class Header {
-    public function show_header() {
-        $Template = new Template();
-        $Template->load_template("general/header.php");
+    public function show_header($request, $title) {
 
-        if(ARR_USERINFO['userid'] == -1) {
-            $pfp = "default.jpg";
-            $username = "<a style='text-decoration: none;' href='/account/login'>Login</a>";
+        load_css("header");
 
-        } else {
-            // $pfp = ARR_USERINFO['userid'] . ".jpg";
-            $pfp = "default.jpg";
-            $username = ARR_USERINFO['username'];
-        }
+        $DB = new Database();
 
-        $Template->load_hash([
-            "USERNAME" => $username,
-            "USERID" => ARR_USERINFO['userid'],
-            "PROFILEPICTURE" => "/static/profilepictures/" . $pfp,
-            "HYPERLINK" => ROUTE
-        ]);
+        $User = new User(SESS_USERID);
+        $User->load_user();
         
-        $Template->compile_template();
-        $Template->show_template();
+        $TemplateHeader = new Template();
+        $TemplateHeader->load_template("general/header.php");
+        $TemplateHeader->load_hash([
+            "USERNAME" => ARR_USERINFO['userid'] == -1 ? "<a href='/account/login'>Login</a>" : ARR_USERINFO['username'],
+            "PROFILEPICTURE" => "/static/profilepictures/default.jpg",
+            "HYPERLINK" => $request,
+            "TITLE" => $title,
+            "DISP_ADMIN" => ($User->isAdmin()) ? "" : "hiddenIp"
+        ]);
+        $TemplateHeader->compile_template();
+        return $TemplateHeader->get_output();
     }
 }

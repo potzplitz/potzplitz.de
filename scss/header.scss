@@ -1,0 +1,18 @@
+.header-right {
+    .admin {
+
+        margin-right: 15px;
+        margin-top: 3px;
+        a {
+            >button {
+                background-color: rgb(112, 8, 25);
+                color: white;
+                border-radius: 7px;
+                border: solid 1px rgb(45, 3, 112);
+                padding: 6px;
+                padding-top: 2px !important;
+                padding-bottom: 4px !important;
+            }
+        }
+    }
+}
