@@ -2,7 +2,6 @@
 <html lang="de">
     <head>
         <title>potzplitz.de - <-TITLE-></title>
-        <h1 style="position:absolute; left:-9999px;"><-TITLE-></h1>
         <meta charset="UTF-8">
         <meta name="msvalidate.01" content="3E9B99C3FCEFC4CA0934CAB32615593D" />
         <meta name="author" content="Jan Schilfahrt">
@@ -20,11 +19,15 @@
     <body>
         <-ICONS->
         <-BODY_HEADER->
-        <div id="messagebox" class="debugColor" style="display: none;">
-            <p></p>
-        </div>
-        <!-- <main class="page-content"> -->
+
+        <main class="page">
+            <h1 style="position:absolute; left:-9999px;"><-TITLE-></h1>
+            <div id="messagebox" class="debugColor" style="display: none;">
+                <p></p>
+            </div>
+
             <-CONTENT->
-        <!-- </main> -->
+        </main>
     </body>
+
 </html>

@@ -154,6 +154,10 @@ class GDLevels implements Routable {
                 $templateKeys['verifier'] = $level['verifier'];
             }
 
+            if($this->viewMode == "ncl") {
+                $templateKeys['DEMON_CODE'] = $level['diff'];
+            }
+
             $Template->load_hash(array_merge([
                 "LEVELNAME" => $level['name'],
                 "LEVELNAME_RAW" => $level['raw_name'],

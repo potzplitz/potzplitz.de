@@ -7,10 +7,10 @@ class Session {
 
         $session_id = $_COOKIE['session'] ?? -1;
 
-        if($session_id == -1) {
+        if($session_id == -1) { // not logged in
             define("SESS_USERID", -1);
             define("SESS_ID", null);
-            return -1; // not logged in
+            return -1; 
         }
 
         $query = "SELECT * from sessions where sess_ident = :sess_ident";
@@ -20,7 +20,7 @@ class Session {
 
         $DB->query($query, $binds);
 
-        if ($DB->rows < 1) {
+        if ($DB->rows < 1) { // session has expired
             define("SESS_USERID", -1);
             define("SESS_ID", null);
             define("SESS_IDENT", null);
@@ -28,10 +28,19 @@ class Session {
             return -1;
         }
 
+        // session valid -> all ok
+
         define("SESS_USERID", $DB->RSArray[0]['userid']);
         define("SESS_IDENT", $_COOKIE['session']);
         define("SESS_ID", $DB->RSArray[0]['sess_id']);
         define("SESSIONDATA", $DB->RSArray[0]['sessiondata']);
+
+        $query = "UPDATE t_users set lastlog = sysdate where userid = :userid";
+        $binds = [
+            "userid" => $DB->RSArray[0]['userid']
+        ];
+
+        $DB->query($query, $binds);
     }
 
     public function create_session($userid) {

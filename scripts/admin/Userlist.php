@@ -4,11 +4,13 @@ class Userlist implements AdminModuleInterface {
     private $users = [];
     public function init() {
         set_title("Userlist");
+        $this->loadUsers();
         $this->displayUserList();
     } 
 
     private function displayUserList() {
-        echo "TODO";
+       $Template = new Template();
+       $Template2 = new Template();
     }
 
     private function loadUsers() {

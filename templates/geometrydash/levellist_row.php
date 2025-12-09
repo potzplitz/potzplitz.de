@@ -1,6 +1,9 @@
 <a href="<-LEVEL_LINK->">
     <div class="gdAREDLContainer container <-COMPLETED->" style="background-image: url('<-THUMBNAIL->')">
         <div class="blur"></div>
+        <div class="demonimg">
+            <img src="/static/assets/demonfaces/<-DEMON_CODE->.png" alt="">
+        </div>
         <h2 class="fs-4 fw-bold"><-LEVELNAME-></h2>
         <p class="fs-6">by <-CREATOR-></p>
         <p class="placement fs-4">#<-PLACEMENT-></p>

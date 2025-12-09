@@ -15,6 +15,7 @@
 .gdAREDLContainer {
   position: relative;
   overflow: hidden;
+  display: flex;
   width: 75%;
   height: 140px;
   margin-bottom: 20px;
@@ -26,6 +27,12 @@
   background-repeat: no-repeat; }
   .gdAREDLContainer .gdAREDLContainer input {
     pointer-events: all; }
+  .gdAREDLContainer .demonimg {
+    display: flex;
+    margin-left: 12%;
+    align-items: center;
+    width: 100%;
+    z-index: 3; }
   .gdAREDLContainer h2, .gdAREDLContainer p {
     position: absolute;
     left: 50%;
@@ -211,7 +218,7 @@
 
 .aredl_detail {
   width: 80%;
-  height: 100%;
+  height: 1000px;
   background-color: var(--bg-2);
   border-radius: 8px;
   border: 1px solid var(--border-2);
