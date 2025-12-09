@@ -1,4 +1,4 @@
-  <div class="main-content">
+
     <div class="card-grid">
       <a href="/geometrydash/extremedemons" class="card">
         <i class="fa-solid fa-users"></i>
@@ -16,5 +16,5 @@
         <p>For the game osu!</p>
       </a>
     </div>
-</div>
+
 

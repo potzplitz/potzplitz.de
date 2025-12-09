@@ -105,8 +105,7 @@ class Account implements Routable {
             header("Location: /account/verify");
             die;
         } else {
-            debug_mail("es wurden beim erstellen vom account sonderzeichen verwendet: " . $result . "    " . convert_var_dump_to_string(INS));
-            die;
+            $error = "Special characters are not allowed!";
         }
 
         if($error != 0) {

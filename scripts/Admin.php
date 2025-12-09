@@ -12,16 +12,17 @@ class Admin implements Routable {
     
     public function init() {
 
-        // Validierung
-        if (!in_array($this->mode, $this->ALLOWED_MODES, true)) {
-            throw new InvalidArgumentException("Invalid admin mode");
-        }
-
         if(!$this->is_user_admin()) {
             // hier errorpage einbauen
             echo "<h1>You are not authorized to view this page!</h1>";
             echo "<a href='/'>go back</a>";
+            http_response_code(403);
             die;
+        }
+
+        // Validierung
+        if (!in_array($this->mode, $this->ALLOWED_MODES, true)) {
+            throw new InvalidArgumentException("Invalid admin mode");
         }
         
         $this->init_admin_function($this->mode);
