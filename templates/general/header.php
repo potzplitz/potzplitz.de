@@ -1,6 +1,6 @@
 <div class="header">
   <div class="header-left">
-    <a href="<-HYPERLINK->" style="text-decoration: none;">
+    <a href="/" style="text-decoration: none;">
       <span id="header"><-TITLE-></span>
     </a>
   </div>
