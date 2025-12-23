@@ -31,20 +31,7 @@ class Sitemap implements Routable {
             echo '<priority>0.8</priority>';
             echo '</url>';
         }
-
-        $DB->query("SELECT id, raw_name FROM t_aredl", []);
-
-        foreach ($DB->RSArray as $row) {
-            $slug = strtolower(str_replace("_", "-", $row['raw_name']));
-            $url = $base . "/geometrydash/extremedemons/{$slug}-{$row['id']}";
-
-            echo '<url>';
-            echo '<loc>' . htmlspecialchars($url) . '</loc>';
-            echo '<changefreq>weekly</changefreq>';
-            echo '<priority>0.6</priority>';
-            echo '</url>';
-        }
-
+        
         echo '</urlset>';
         exit;
     }
