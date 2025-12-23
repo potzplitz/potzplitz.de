@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
     <head>
-        <title>potzplitz.de - <-TITLE-></title>
+        <title><-TITLE-> - potzplitz.de</title>
         <meta charset="UTF-8">
         <meta name="msvalidate.01" content="3E9B99C3FCEFC4CA0934CAB32615593D" />
         <meta name="author" content="Jan Schilfahrt">

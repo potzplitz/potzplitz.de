@@ -12,6 +12,7 @@ class Account implements Routable {
             "init"         => $this->start_login(INS),
             "verify"       => $this->start_verification(),
             "verify_code"  => $this->check_verification_code(INS),
+            "edit"         => $this->editAccountPage(INS),
             default        => null,
         };
     }
@@ -156,6 +157,10 @@ class Account implements Routable {
             $sess = new Session();
             $sess->create_session($DB->RSArray[0]['userid']);
 
+            if (isset($inHash['remember_me']) && (int)$inHash['remember_me'] === 1) {
+                $sess->create_persistent_session($DB->RSArray[0]['userid']);
+            }
+
             header("Location: " . URL_HTBASE . "?message=" . urlencode("Successfully logged in!"));
             die;
 
@@ -244,5 +249,23 @@ class Account implements Routable {
             echo "Verification code is invalid or expired!";
             die;
         }
+    }
+    private function editAccountPage() {
+        $DB = new Database();
+        $Template = new Template();
+
+        $User = new User(SESS_USERID);
+        $User->load_user();
+
+        if(!$User->isLoggedIn()) {
+            echo "<h2>You have to be logged in to do that!</h2>";
+            return;
+        }
+
+        set_title("Edit Account");
+
+        $Template->load_template("account/edit.php");
+        $Template->compile_template();
+        $Template->show_template();
     }
 }

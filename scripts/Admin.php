@@ -15,12 +15,10 @@ class Admin implements Routable {
         if(!$this->is_user_admin()) {
             // hier errorpage einbauen
             echo "<h1>You are not authorized to view this page!</h1>";
-            echo "<a href='/'>go back</a>";
-            http_response_code(403);
-            die;
+            http_response_code(401);
+            return;
         }
 
-        // Validierung
         if (!in_array($this->mode, $this->ALLOWED_MODES, true)) {
             throw new InvalidArgumentException("Invalid admin mode");
         }
@@ -39,34 +37,27 @@ class Admin implements Routable {
     private function is_user_admin() {
         $User = new User(SESS_USERID);
         $User->load_user();
-        
-        if($User->isAdmin()) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return $User->isAdmin();
     }
     
     private function init_admin_function($function) {
         require_once("includes/objects/AdminModuleInterface.php");
 
         $filepath = __DIR__ . "/admin/" . basename($function) . ".php";
-        
-        // Prüfe ob Datei existiert
+
         if (!file_exists($filepath)) {
             throw new RuntimeException("Admin module not found");
         }
         
         require_once($filepath);
-        
-        // Prüfe ob Klasse existiert
+
         if (!class_exists($function)) {
             throw new RuntimeException("Admin class not found");
         }
         
         $AdminFunction = new $function();
-        
-        // Optional: Interface prüfen
+
         if (!($AdminFunction instanceof AdminModuleInterface)) {
             throw new RuntimeException("Invalid admin module");
         }

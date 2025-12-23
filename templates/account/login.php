@@ -19,6 +19,13 @@
             <p class="help">Min. 8 characters</p>
         </div>
 
+        <div class="field field--checkbox">
+            <label class="checkbox">
+                <input type="checkbox" name="remember_me" value="1">
+                <span>Stay logged in</span>
+            </label>
+        </div>
+
         <button class="btn" type="submit">Sign in</button>
         <p class="alt">
             Don’t have an account?

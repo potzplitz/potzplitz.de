@@ -14,6 +14,7 @@ require_once("clsSession.php");
 require_once("objects/intRoutable.php");
 require_once("clsLevel.php");
 require_once("incCredentials.php");
+require_once(__DIR__ . "/../util/ErrorCodeHandler.php");
 
 require_once(__DIR__ . "/../Header.php");
 

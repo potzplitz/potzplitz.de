@@ -4,6 +4,7 @@ class User {
     public array $user = [];
     private $userid = -1;
     private $is_admin = false;
+    private $is_logged_in = true;
 
     public function __construct($userid) {
         $this->userid = $userid;
@@ -12,6 +13,7 @@ class User {
         $DB = new Database();
 
         if($this->userid == -1) {
+            $this->is_logged_in = false;
             return $user = ["userid" => -1];
         }
         
@@ -24,6 +26,7 @@ class User {
         $check_rsarray = $DB->RSArray[0]['userid'] ?? null;
 
         if($check_rsarray == null) {
+            $this->is_logged_in = false;
             return $user = ["userid" => -1];
         }
         
@@ -40,5 +43,9 @@ class User {
 
     public function isAdmin(): bool {
         return isset($this->user['is_admin']) && (int)$this->user['is_admin'] === 1;
+    }
+
+    public function isLoggedIn(): bool {
+        return $this->is_logged_in;
     }
 }

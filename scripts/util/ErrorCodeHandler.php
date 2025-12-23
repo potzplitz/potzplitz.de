@@ -77,7 +77,8 @@ class ErrorCodeHandler {
         $Template->show_template();
 
         $this->checkExitAfterHandle();
-        return 0;
+        die;
+        // return 0;
     }
 
     private function checkErrorcodeExists() {
