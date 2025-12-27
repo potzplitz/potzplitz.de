@@ -188,12 +188,13 @@ public function load_session_data() {
         $tokenHash = hash_hmac('sha256', $token, "", false);
 
         // insert persistent session into DB
-        $query = "INSERT into sessions_persistent (userid, expires_at, token_hash, created_at, valid, agent) values 
-                    (:userid, sysdate + interval '1' year, :token_hash, sysdate, 1, :useragent)";
+        $query = "INSERT into sessions_persistent (userid, expires_at, token_hash, created_at, valid, agent, referrer) values 
+                    (:userid, sysdate + interval '1' year, :token_hash, sysdate, 1, :useragent, :referrer)";
         $binds = [
             "userid" => $userid,
             "token_hash" => $tokenHash,
-            "useragent" => $this->getDeviceType()
+            "useragent" => $this->getDeviceType(),
+            "referrer" => $this->getReferrer()
         ];
 
         $DB->query($query, $binds);
@@ -244,6 +245,10 @@ public function load_session_data() {
 
         $query = "SELECT * from sessions where userid = :userid 
                     order by session_start desc fetch first 1 row only";
+
+        $binds = [
+            "userid" => $userid,
+        ];
 
         $DB->query($query, $binds);
 
