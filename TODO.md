@@ -29,7 +29,6 @@ brute force schutz
 login endpunkt unbegrenzt => lockout machen
 
 #PRIOS
-
 2. Graues Standardbild
 3. Profil Bearbeiten
 4. Admin Panels

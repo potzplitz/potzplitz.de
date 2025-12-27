@@ -3,6 +3,7 @@
     <head>
         <title><-TITLE-> - potzplitz.de</title>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="msvalidate.01" content="3E9B99C3FCEFC4CA0934CAB32615593D" />
         <meta name="author" content="Jan Schilfahrt">
         <-META_TAGS->

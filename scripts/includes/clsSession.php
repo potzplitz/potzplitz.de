@@ -50,7 +50,6 @@ public function load_session_data() {
             define("SESS_USERID", $DB->RSArray[0]['userid']);
             define("SESS_IDENT", $DB->RSArray[0]['sess_ident']);
             define("SESS_ID", $DB->RSArray[0]['sess_id']);
-            define("SESSIONDATA", $DB->RSArray[0]['sessiondata']);
 
             // update user last login
             $query = "UPDATE t_users set lastlog = sysdate where userid = :userid";
@@ -99,7 +98,6 @@ public function load_session_data() {
             define("SESS_USERID", -1);
             define("SESS_ID", null);
             define("SESS_IDENT", null);
-            define("SESSIONDATA", null);
 
             return -1;
             
@@ -121,7 +119,6 @@ public function load_session_data() {
             define("SESS_USERID", $DB->RSArray[0]['userid']);
             define("SESS_IDENT", $DB->RSArray[0]['sess_ident']);
             define("SESS_ID", $DB->RSArray[0]['sess_id']);
-            define("SESSIONDATA", $DB->RSArray[0]['sessiondata']);
 
             // update user last login
             $query = "UPDATE t_users set lastlog = sysdate where userid = :userid";
@@ -140,7 +137,6 @@ public function load_session_data() {
     define("SESS_USERID", $DB->RSArray[0]['userid']);
     define("SESS_IDENT", $this->getSessionCookie());
     define("SESS_ID", $DB->RSArray[0]['sess_id']);
-    define("SESSIONDATA", $DB->RSArray[0]['sessiondata']);
 
     // update user last login
     $query = "UPDATE t_users set lastlog = sysdate where userid = :userid";
@@ -191,11 +187,13 @@ public function load_session_data() {
         $token = bin2hex(random_bytes(32));
         $tokenHash = hash_hmac('sha256', $token, "", false);
 
-        $query = "INSERT into sessions_persistent (userid, expires_at, token_hash, created_at, valid) values 
-                    (:userid, sysdate + interval '1' year, :token_hash, sysdate, 1)";
+        // insert persistent session into DB
+        $query = "INSERT into sessions_persistent (userid, expires_at, token_hash, created_at, valid, agent) values 
+                    (:userid, sysdate + interval '1' year, :token_hash, sysdate, 1, :useragent)";
         $binds = [
             "userid" => $userid,
-            "token_hash" => $tokenHash
+            "token_hash" => $tokenHash,
+            "useragent" => $this->getDeviceType()
         ];
 
         $DB->query($query, $binds);
@@ -236,10 +234,12 @@ public function load_session_data() {
         $DB = new Database();
 
         $binds = [
-            "userid" => $userid
+            "userid" => $userid,
+            "referrer" => $this->getReferrer(),
+            "agent" => $this->getDeviceType()
         ];
 
-        $query = "BEGIN manage_session.create_Session(:userid); END;";
+        $query = "BEGIN manage_session.create_Session(:userid, :referrer, :agent); END;";
         $DB->query($query, $binds);
 
         $query = "SELECT * from sessions where userid = :userid 
@@ -261,5 +261,20 @@ public function load_session_data() {
         ];
 
         $DB->query($query, $binds);
+    }
+
+    public function getDeviceType() {
+        return $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown Device';
+    }
+
+    public function getReferrer() {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $parts = parse_url($_SERVER['HTTP_REFERER']);
+
+            return $parts['host'] ?? null;
+
+        } else {
+            return "none";
+        }
     }
 }
